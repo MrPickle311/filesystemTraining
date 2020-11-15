@@ -42,6 +42,46 @@ void createFile(path filename,string start_data)
 void copyTests(path file_path)
 {
 	cout << "\n TESTY KOPIOWANIA\n" << endl;
+	//mniej wiecej tak powinien wygladac kopiowanie , fajne wysokopoziomowe podejscie
+	//pamietaj ,ze jesli bedziesz operaowac na dwoch sciezkach wywodzacych sie z jednej , to zawsze kopiuj sciezke
+	try
+	{
+		path new_file = file_path;
+		new_file.remove_filename();
+		new_file /= "file2.txt";
+		cout << "New file path :"<< new_file << endl;
+		//copy_file(file_path,new_file); wywala wyjatek jesi plik o takiej samej sciezce istnieje
+		copy_file(file_path,new_file,copy_options::skip_existing);//powinno grac, jezeli plik o takiej samej sciezce istnieje
+		//to ta flaga sprawia ,ze istniejacy plik nie zostanie nadpisany, istnieje tez odwrotna flaga, preferuj wywolywanie funkcji
+		//z flagami,badz sprawdzaj to jakos
+		//sa jeszcze flagi do kopiowania katalogow
+		cout << "File has benn copied succesfully " << endl;
+	}
+	catch (filesystem_error& e)
+	{
+		cout << "Error with copying : "<< e.what() << endl;
+	}
+	cout << "Kopiowanie folderow" << endl;
+	file_path.remove_filename();
+	path p = file_path;
+	p /= "dir2";
+	file_path /= "dir";
+	const auto copyFlags {/*copy_options::directories_only | */ copy_options::recursive | copy_options::update_existing};
+	//chyba widac do czego te flagi sluza, recursive - kopiuje wszystkie podfoldery i ich pliki
+	try
+	{
+		copy(file_path,p,copyFlags);
+		static_cast<void>(system("tree")); // ciekawe wywolanie , pokazuje drzewo katalogowe
+	}
+	catch (filesystem_error& e)
+	{
+		cout << "Error with copying folder : " << e.what() << endl;
+		cout << "With path : " << e.path1() << " and " << e.path2() << endl;
+		//dodatkowo ta klasa bledu moze zawierac sciezki :
+		//sciezka zrodlowa = e.path1()
+		//sciezka docelowa = e.path2()
+	}
+
 
 }
 
@@ -75,7 +115,10 @@ void filesystemMain()
 	current_path(a);//ustawiam z powrotem obecna sciezke na ta ,ktora mialem wczesniej
 	//tutaj uwazaj na wyjatkowe sytuacje
 	path file_path = "sandbox1/file.txt";
+	cout << "Rozmiar pliku file.txt to : " << file_size(file_path) << endl; // zwraca rozmiar w bajtach
 	//symLinkTests(file_path);
+	copyTests(file_path);
+	cout << "\n TEST TWORZENIA NOWEGO PLIKU\n" << endl;
 	if (!create_directory(file_path.parent_path()))
 	{
 		cout << "The subdir : " << file_path .parent_path() << " hasn't created";
