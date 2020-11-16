@@ -4,6 +4,10 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 using namespace filesystem;
@@ -37,6 +41,103 @@ void createFile(path filename,string start_data)
 		}
 	}
 	else cout << "Cannot open a file " << endl;
+}
+
+void spaceTest(path filename)
+{
+	space_info si { space(filename)};
+	cout << endl;
+	cout << " TESTOWANIE SPRAWDZANIA ROZMIAROW " << endl;
+	cout << "Rozmiar pliku file.txt to : " << file_size(filename) << endl; // zwraca rozmiar w bajtach
+	filename.remove_filename();
+	filename /= "dir";
+	directory_entry entry{filename};
+	try
+	{
+		cout << "Directory size : " << entry.file_size() << endl;
+	}
+	catch (filesystem_error& e)
+	{
+		cout << "Error : " << e.what() << endl;
+	}
+
+
+	cout << "Avalaible space : " << si.available << endl;
+	cout << "Free space : " << si.free << endl;
+	cout << "Capacity space : " << si.capacity << endl;
+}
+
+/// SPRAWDZ W PROJEKCIE DO CZEGO SLUZY FUNKCJA REFRESH,ALBO PRZY GRZEBANIU PRZY PERMSACH
+
+static  tuple<path,file_status,size_t> file_info(const directory_entry& entry)
+{
+	const auto fs {entry.status()};
+	//funkcja ta zwraca typ file_status dla danego pliku/katalogu
+	//typ filestatus zawiera info o prawach dostepu oraz o typie pliku
+	return {entry.path(),fs,
+				is_regular_file(fs) ? file_size(entry.path()) : 0u};
+}
+
+static char type_char(file_status fs)
+{
+	if  (is_directory(fs)) return 'd';
+	if  (is_symlink(fs)) return 'l';
+	if  (is_character_file(fs)) return 'c';
+	if  (is_block_file(fs)) return 'b';
+	if  (is_fifo(fs)) return 'p';
+	if  (is_socket(fs)) return 's';
+	if  (is_other(fs)) return 'o';
+	if  (is_regular_file(fs)) return 'f';
+	return '?';
+}
+
+static string rwx(perms p)
+{
+	auto check = [p](perms bit,char c)
+	{
+		return (p & bit) == perms::none ? '-' : c;
+	};
+	return {    check(perms::owner_read,	'r'),
+				check(perms::owner_write,	'w'),
+				check(perms::owner_exec,	'x'),
+				check(perms::group_read,	'r'),
+				check(perms::group_write,	'w'),
+				check(perms::group_exec,	'x'),
+				check(perms::others_read,	'r'),
+				check(perms::others_write,	'w'),
+				check(perms::others_exec,	'x')
+	};
+}
+
+static string size_string(size_t size)
+{
+	stringstream ss; // do normalnego stringa nie moge uzywac operatora strumienia
+	if		(size >= 1000000000) ss << size/1000000000 << 'G';
+	else if (size >= 1000000)	 ss << size/1000000	   << 'M';
+	else if (size >= 1000)		 ss << size/1000	   << 'K';
+	else					     ss					   << 'B';
+	return ss.str();
+}
+
+void ls(path p)
+{
+	cout << "\nLS TESTING " << endl;
+	if(!exists(p))
+	{
+		cout << "Sciezka dostepu " << p << " nie istnieje " << endl;
+		return;
+	}
+	vector<tuple<path,file_status,size_t>> items;
+
+	transform(directory_iterator{p},directory_iterator{},back_inserter(items),file_info);
+	//zbieranie informacji z katalogu
+	for(const auto& [path,status,size] : items)
+	{
+		cout << type_char(status)
+			 << rwx(status.permissions()) << " "
+			 << setw(4) << right << size_string(size)
+			 << " " << path.filename().c_str() << '\n';
+	}
 }
 
 void copyTests(path file_path)
@@ -115,9 +216,11 @@ void filesystemMain()
 	current_path(a);//ustawiam z powrotem obecna sciezke na ta ,ktora mialem wczesniej
 	//tutaj uwazaj na wyjatkowe sytuacje
 	path file_path = "sandbox1/file.txt";
-	cout << "Rozmiar pliku file.txt to : " << file_size(file_path) << endl; // zwraca rozmiar w bajtach
 	//symLinkTests(file_path);
-	copyTests(file_path);
+	//copyTests(file_path);
+	//spaceTest(file_path);
+	path p = file_path;
+	ls(p.remove_filename());
 	cout << "\n TEST TWORZENIA NOWEGO PLIKU\n" << endl;
 	if (!create_directory(file_path.parent_path()))
 	{
