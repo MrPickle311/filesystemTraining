@@ -1,7 +1,10 @@
-#include "filesystem_and_iostream.hpp"
+#include "filesystem.hpp"
+#include "streams.hpp"
 
 int main()
  {
-	filesystemMain();
+	//filesystemMain();
+	//fix_out();
+	mixed_buffers();
 	return 0;
 }

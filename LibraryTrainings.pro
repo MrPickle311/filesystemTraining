@@ -7,4 +7,5 @@ SOURCES += \
         main.cpp
 
 HEADERS += \
-    filesystem_and_iostream.hpp
+    filesystem.hpp \
+    streams.hpp

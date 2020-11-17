@@ -8,6 +8,8 @@
 #include <iomanip>
 #include <algorithm>
 #include <vector>
+#include <numeric>
+#include <strstream>
 
 using namespace std;
 using namespace filesystem;
@@ -119,6 +121,26 @@ static string size_string(size_t size)
 	return ss.str();
 }
 
+stringstream depth(size_t depth)
+{
+	stringstream s{};
+	for(size_t i{0}; i < depth;++i)
+		s  << '-';
+	return s;
+}
+
+size_t add_file_size(size_t s,directory_entry itr)
+{
+	if (is_regular_file( itr.path()))
+		return s + itr.file_size();
+	else return s;
+}
+
+size_t dir_size(path p)//dziala i to calkiem dobrze
+{
+	return accumulate(recursive_directory_iterator{p},{},0u,add_file_size) ;
+}
+
 void ls(path p)
 {
 	cout << "\nLS TESTING " << endl;
@@ -131,6 +153,27 @@ void ls(path p)
 
 	transform(directory_iterator{p},directory_iterator{},back_inserter(items),file_info);
 	//zbieranie informacji z katalogu
+	for(const auto& [path,status,size] : items)
+	{
+		cout << type_char(status)
+			 << rwx(status.permissions()) << " "
+			 << setw(4) << right << size_string(size)
+			 << " " << path.filename().c_str() << '\n';
+	}
+}
+
+void ls_recursive(path p)
+{
+	cout << "\nLS WITH RECURSIVE OPT TESTING" << endl;
+	if(!exists(p))
+	{
+		cout << "Sciezka dostepu " << p << " nie istnieje " << endl;
+		return;
+	}
+	vector<tuple<path,file_status,size_t>> items;
+
+	transform(recursive_directory_iterator{p,directory_options::skip_permission_denied},{},back_inserter(items),file_info);
+
 	for(const auto& [path,status,size] : items)
 	{
 		cout << type_char(status)
@@ -202,25 +245,8 @@ void symLinkTests(path file_path)//no dobra, to mi sie crashuje ,moze cos z upra
 	//create_directory_symlink(p_dir,file_path);
 
 }
-
-void filesystemMain()
+void createTest(path file_path)
 {
-	path a = current_path();
-
-	path root = a.root_path(); // zwraca sciezke ,ktora symbolizuje podstawe sciezki systemowej np. "/" lub "C:\"
-	path parent = a.parent_path(); // zwraca sciezke ,ktora
-	cout << a << endl;
-	cout << a.filename().relative_path() << endl; // sciezka wzgledem tego katalogu,ale wartosc zwrocone obejmuje rowniez ten katalog
-	cout << "root_path : " << root << endl;
-	cout << "parent_path : " << parent << endl;
-	current_path(a);//ustawiam z powrotem obecna sciezke na ta ,ktora mialem wczesniej
-	//tutaj uwazaj na wyjatkowe sytuacje
-	path file_path = "sandbox1/file.txt";
-	//symLinkTests(file_path);
-	//copyTests(file_path);
-	//spaceTest(file_path);
-	path p = file_path;
-	ls(p.remove_filename());
 	cout << "\n TEST TWORZENIA NOWEGO PLIKU\n" << endl;
 	if (!create_directory(file_path.parent_path()))
 	{
@@ -299,6 +325,46 @@ void filesystemMain()
 		cout << endl;
 
 	}
+}
+
+void filesystemMain()
+{
+	path a = current_path();
+
+	path root = a.root_path(); // zwraca sciezke ,ktora symbolizuje podstawe sciezki systemowej np. "/" lub "C:\"
+	path parent = a.parent_path(); // zwraca sciezke ,ktora
+	cout << a << endl;
+	cout << a.filename().relative_path() << endl; // sciezka wzgledem tego katalogu,ale wartosc zwrocone obejmuje rowniez ten katalog
+	cout << "root_path : " << root << endl;
+	cout << "parent_path : " << parent << endl;
+	current_path(a);//ustawiam z powrotem obecna sciezke na ta ,ktora mialem wczesniej
+	//tutaj uwazaj na wyjatkowe sytuacje
+	path file_path = "sandbox1/file.txt";
+	//symLinkTests(file_path);
+	//copyTests(file_path);
+	//spaceTest(file_path);
+	//permissions(file_path,perms::group_all | perms::others_all, perm_options::remove);
+	//permissions(file_path,perms::none); // to automatycznie zamienia ,czyli perm_options::replace
+	//permissions(file_path,perms::all);
+	// owner to nie jest root!
+	// root ma dostep zawsze do wszystkiego
+	//za pomoca tej funkcji zmieniam uprawnienia dla plikow,katalogow
+	path p = file_path;
+	p.remove_filename();
+	cout << "path ! : " << p << endl;
+
+	strstream s;
+	s<< "asdaasd";
+	stringstream s1;
+	//roznica ,s dla funckji str() zwraca char*
+
+	try {
+			cout << dir_size(p) << endl;
+	}  catch (filesystem_error& e) {
+		cout << e.what() << endl;
+	}
+
+	//ls_recursive(p.remove_filename());
 }
 
 
