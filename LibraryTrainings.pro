@@ -7,5 +7,8 @@ SOURCES += \
         main.cpp
 
 HEADERS += \
+    Matrix.hpp \
     filesystem.hpp \
+    matrix.hpp \
+    mutex.hpp \
     streams.hpp

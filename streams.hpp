@@ -9,13 +9,13 @@
 #include <numeric>
 #include <iterator>
 #include <iostream>
+#include <stdio.h>
 
 using namespace std;
 using namespace filesystem;
 
-void fix_out()
+void fix_out(path p)
 {
-	path p {"sandbox1/file.txt"};
 	ifstream f{p};
 	if(f)
 	{
@@ -29,9 +29,8 @@ void fix_out()
 	}
 }
 
-void mixed_buffers()
+void mixed_buffers(path p)
 {
-	path p = "sandbox1/file.txt";
 	filebuf buffer;
 	//zauwaz ,ze to nie jest streambuf
 	ostream out{&buffer};
@@ -54,3 +53,41 @@ void mixed_buffers()
 		//w celu usuniecia bitu eofbit
 	}
 }
+
+void streamTests(path p)
+{
+	cout << "\nSTREAMS TESTING" << endl;
+	string str {"abc 123"};
+	cout << str << endl;
+	stringstream ss{str};
+	cout << "stream content : " << ss.str() << endl;
+	ss.seekp(ss.str().length()); // kurewko kosztowne ,szczegolnie dla duzych lancuchow , musi istniec inne rozwiazanie
+	//czyli najpierw ladujesz bufor ,a potem zwracasz stringa , bez kombinowania
+	ss << "XXX";
+	ss.flush();//nie wiem ,czy potrzebne
+	cout << "stream content : " << ss.str() << endl;
+	cout << str << endl;
+	ss.~basic_stringstream();
+	cout << "\nLOW LEVEL STREAM OPERATIONS" << endl;
+	filebuf buffer;
+	istream in{&buffer};
+	ostream out{&buffer};
+	buffer.open(p,ios::app | ios::out | ios::in);
+	buffer.sputc('%');
+	buffer.sputn("+=",2);//drugi argument okresla to ile znakow z lancucha  char const* ma zostac wyslane
+	buffer.sputn("+=",1);//do bufora strumienia
+	char a = '2';
+	a = buffer.sgetc();
+
+	cout << a << endl;
+	a = buffer.sgetc();
+	cout << a << endl;
+
+	a = buffer.snextc();
+	cout << a << endl;
+
+	a = buffer.sbumpc();
+	cout << a << endl;
+
+}
+

@@ -5,6 +5,7 @@ int main()
  {
 	//filesystemMain();
 	//fix_out();
-	mixed_buffers();
+	//mixed_buffers("sandbox1/file.txt");
+	streamTests("sandbox1/file.txt");
 	return 0;
 }
