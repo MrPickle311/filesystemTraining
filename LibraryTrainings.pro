@@ -12,3 +12,6 @@ HEADERS += \
     matrix.hpp \
     mutex.hpp \
     streams.hpp
+
+QMAKE_CXXFLAGS += -std=c++0x -pthread
+LIBS += -pthread
