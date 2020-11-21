@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include <string>
 #include <chrono>
+#include <deque>
 
 using namespace std;
 
@@ -206,10 +207,77 @@ void promise_tests()
 	cout << "End " << endl;
 }
 
+void task(string str,size_t s)
+{
+	this_thread::sleep_for(chrono::seconds(s));
+	cout << "Task " << str << " done! " << endl;
+}
+
+class tasks_executer//to wymaga puli watkow
+{
+public:
+	tasks_executer(deque<packaged_task<void(string,size_t)>> functions,deque<pair<string,size_t>> args):
+		avalaible_threads_{3},
+		tasks_{move(functions)},
+		args_{args}
+	{}
+private:
+	mutable size_t avalaible_threads_;
+	mutable mutex m_;
+	deque<packaged_task<void(string,size_t)>> tasks_;
+	deque<pair<string,size_t>> args_;
+	condition_variable cv;
+private:
+	void pop_task()
+	{
+		//tutaj szybkie pobranie zadania
+
+		packaged_task<void(string,size_t)> task = move(tasks_.front());
+		tasks_.pop_front();
+
+		future<void> f {task.get_future()};
+		thread th{move(task),args_.front().first,args_.front().second};
+		f.get();
+		th.join();
+
+		++avalaible_threads_;
+		cv.notify_one();
+	}
+public:
+	void execute_tasks()
+	{
+		while (!tasks_.empty())
+		{
+			unique_lock g{m_};//trzeba uzyc unique_lock gdyz istnieje potrzeba elastycznego odblokowywania i zablokowywania
+			cv.wait(g,[&]{ return avalaible_threads_ > 0 ;});
+			--avalaible_threads_;	//to tutaj trzeba sekwencyjnie odejmowac ilosc watkow
+			pop_task();
+		}
+	}
+};
+
+
+void condition_variable_test()
+{
+	cout << "\nCONDITION VARIABLE TESTS" << endl;
+	cout << "Generatings tasks " << endl;
+	deque<packaged_task<void(string,size_t)>> tasks_;
+	deque<pair<string,size_t>> args_;
+	for(size_t i{0}; i < 10;++i)
+	{
+		tasks_.push_back(packaged_task<void(string,size_t)>{task});
+		args_.push_back({"Task",3});
+		cout << "Task : " << i << " generated" << endl;
+	}
+	tasks_executer t1{move(tasks_),move(args_)};
+	t1.execute_tasks();
+}
+
 void main_m()
 {
 	//future_tests();
 	//packaged_task_tests();
-	promise_tests();
+	//promise_tests();
+	condition_variable_test();
 }
 
