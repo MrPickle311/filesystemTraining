@@ -19,6 +19,20 @@ string get_text(string text,size_t s)
 	return text;
 }
 
+void get_text_with_promise(string text,size_t s,promise<string>& pr)
+{
+	cout << "computing..." << endl;
+	this_thread::sleep_for(chrono::seconds(s));
+	pr.set_value(text);
+}
+
+int malicious_funtion(int i)
+{
+	if ( i< 0)
+		throw out_of_range{" i < 0"};
+	return i;
+}
+
 void future_status_check(future_status s,size_t n)
 {
 	cout << "Function " << n << " invoked" << endl;
@@ -46,14 +60,14 @@ void future_tests()
 	//lecz sama funkcje wait() wywoluje funkcje
 	//gdy wywolanie jest lanuch::deferred funkcja wait_for() od nawet nie probuje wywolac zadanej funkcji
 
-	//f1.wait();
+	f1.wait();
 	//czyli jak mam async ,to std::async() od razu oblicza i dzieki czemu przy wywolaniu funkcji get() od razu mam wynik
 	//gdy mam deffered ,to funkcja std::async() wywoluje zadana funkcje dopiero przy napotkaniu  metody get() lub wait()
-	//	cout << f1.get() << endl;
-	//	cout << f2.get() << endl;
-	//	cout	 << f3.get() << endl;
-	//	cout	 << f4.get() << endl;
-	//	cout	 << f5.get() << endl;
+		cout << f1.get() << endl;
+		cout << f2.get() << endl;
+		cout	 << f3.get() << endl;
+		cout	 << f4.get() << endl;
+		cout	 << f5.get() << endl;
 	//by zobaczyc efekt , oproznij bufor
 	future_status_check(s,1);
 
@@ -67,8 +81,135 @@ void future_tests()
 	future_status_check(s1,2);
 }
 
+void packaged_task_tests()
+{
+	cout << "\nPACKAGED TASKS TESTS" << endl;
+
+	//wszystko jest wykonywane po kolei
+	cout << "\nsync" << endl;
+	packaged_task<string(string,size_t)> task {get_text};
+	future<string> f1 = task.get_future();
+	task("Hello!",5);
+	cout << "Waiting..." << endl;
+	cout << f1.get() << endl;
+
+	//asynchronicznie
+	cout << "\nasync" << endl;
+	packaged_task<string(string,size_t)> task2 {get_text};
+	if(task2.valid()) // nie moge wykonac ponizszych operacji ,gdy valid() == false
+		//valid() patrzy ,czy zostalo przydzielone zadanie
+	{
+		future<string> f2 = task2.get_future();//wiazanie zadania z std::future
+		thread th1{move(task2),"Hello!",5};//oprocz funkcji get brak jakiegokolwiek kontaktu z watkiem th1
+
+		cout << "Waiting" << endl;
+
+		cout << f2.get() << endl;
+		th1.join();
+	}
+	else cout << "Task is not valid" << endl;
+
+	//obsluga wyjatku
+	cout << "\nexception test" << endl;
+	packaged_task<int(int)> task3 {malicious_funtion};
+	future<int> f3 = task3.get_future();
+	try {
+		task3(-1); //tutaj jeszcze nie nastepuje zgloszenie wyjatku
+		cout << f3.get() << endl; // lecz nastepuje ono tutaj,zamiast pobrania wartosci propagowany jest wyjatek
+	}  catch (out_of_range& e) {
+		cout << "exception has been propagated : " << e.what() << endl;
+	}
+
+}
+
+void writing_loop (promise<bool>& flag_promise)
+{
+	for(size_t i{0}; i < 5 ; ++i)
+	{
+		cout << "Waiting : " << i << endl;
+		if (i == 2) flag_promise.set_value(true);
+		this_thread::sleep_for(chrono::seconds(2));
+	}
+}
+
+void err(promise<int>& p)
+{
+	try {
+		throw runtime_error{"Error!"};
+	}  catch (...) {
+		p.set_exception(current_exception());
+	}
+}
+
+void sth_thread_func(promise<void>& pr1,promise<void>& pr2)
+{
+	future<void> f5{pr2.get_future()};
+	this_thread::sleep_for(chrono::seconds(3));
+	pr1.set_value();
+	cout << "Waiting for signal 2 " << endl;
+	f5.wait();
+	cout << "Signal 2 received" << endl;
+	cout << "Processing" << endl;
+	this_thread::sleep_for(chrono::seconds(3));
+}
+
+void promise_tests()
+{
+	cout << "\nPROMISE TESTS" << endl;
+	promise<string> string_promise;
+	future<string> f1 {string_promise.get_future()}; // wiazanie przyszlosci z std::promise
+	thread th{get_text_with_promise,"Hello!",3,ref(string_promise)};// ten watek ma kontakt z odosobnionym watkiem ,dzieki
+	//wyslaniu do niego referencji obiektu std::future
+	cout << f1.get() << endl;// wartosc lub wyjatek bedzie gotowy do pobrania ,gdy obiekt std::promise
+	//wywola funkcje set_value() lub set_exception() w wywolywanej funkcji
+	th.join();
+
+	//kontakt miedzy watkiami
+	promise<bool> promise_flag;
+	future<bool> f2{promise_flag.get_future()};
+	thread th2{writing_loop,ref(promise_flag)};
+	cout  << boolalpha << f2.get() << endl;
+	th2.join();
+
+	//obsluga bledow
+	promise<int> pr;
+	future<int> f3 {pr.get_future()}; // powiazanie
+	thread th3{err,ref(pr)};
+	try {
+		cout << f3.get() << endl;
+	}  catch (exception& e) {
+		cout << e.what() << endl;
+	}
+	th3.join();
+
+	//emulacja przekazywania sygnalow miedzy watkami z wykorzystaniem promise<void>
+	//osobny watek th4 wysyla mi jakis sygnal,potem go przetwarzam tutaj i wysylam sygnal o koncu przetwarzania ,po czym nastepuje koniec
+	//potem to zrob poprzez czysczenie , o ile mozliwe
+	promise<void> pr1;
+	promise<void> pr2;
+	future<void> f4{pr1.get_future()};
+
+	cout << "Launching external thread..." << endl;
+
+	thread th4{sth_thread_func,ref(pr1),ref(pr2)};
+
+	f4.wait();
+	cout << "Signal 1 received" << endl;
+	cout << "Processing..." << endl;
+
+	this_thread::sleep_for(chrono::seconds(3));
+	pr2.set_value();
+
+	cout << "Waiting... " << endl;
+
+	th4.join();
+	cout << "End " << endl;
+}
+
 void main_m()
 {
-	future_tests();
+	//future_tests();
+	//packaged_task_tests();
+	promise_tests();
 }
 
