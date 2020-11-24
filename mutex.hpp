@@ -273,11 +273,35 @@ void condition_variable_test()
 	t1.execute_tasks();
 }
 
+void waiting_func(shared_future<void> f,size_t n,mutex& m)
+{
+	f.wait();
+	lock_guard l{m};
+	cout << "Function : " << n << " executed" << endl;
+}
+
+void shared_future_tests()
+{
+	cout << "\nSHARED FUTURE TESTS" << endl;
+	promise<void> promise;
+	shared_future<void> f1{promise.get_future()};
+	mutex m;
+	thread th1{waiting_func,f1,1,ref(m)};
+	thread th2{waiting_func,f1,2,ref(m)};
+	//dzieki mozliwosci kopiowania obiektu std::shared_future moge oczekiwac jednego wyniku w dwoch roznych funkcjach
+	this_thread::sleep_for(4s);//4 sekundy
+	promise.set_value();
+
+	th1.join();
+	th2.join();
+}
+
 void main_m()
 {
 	//future_tests();
 	//packaged_task_tests();
 	//promise_tests();
-	condition_variable_test();
+	//condition_variable_test();
+	shared_future_tests();
 }
 
