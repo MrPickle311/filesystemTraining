@@ -11,6 +11,7 @@ HEADERS += \
     filesystem.hpp \
     matrix.hpp \
     mutex.hpp \
+    stack.hpp \
     streams.hpp \
     time.hpp
 
