@@ -40,15 +40,6 @@ public:
 		data_.push(new_value);
 	}
 
-	/// nie wiem ,czy ta metoda jest bezpieczna
-	T top () const
-	{
-		std::lock_guard g{m_};
-		if(data_.empty()) throw empty_stack{};
-		return data_.top();
-	}
-	///
-
 	//takie zaimplementowanie funkcji pop(), czyli bezposrednie zwracanie danych zdjetych ze stosu
 	//w odpowiedzi na wywolanie funkcji pop() pozwala wyeliminowac sytuacje wyscigu , ktora zainstanialaby w zwiazku z
 	// rozdzieleniem funkcji pop() i top()
@@ -56,10 +47,20 @@ public:
 	{
 		std::lock_guard g{m_};
 		if(data_.empty()) throw empty_stack{};
-		auto const value {std::make_shared(std::move(data_.top()))};
-		data_.pop();
+        auto const value {std::make_shared(std::move(data_.top()))};    //biblioteka standardowa gwarantuje mi to ,ze posprzata po sobie
+        //1
+        data_.pop();                                                    // w razie wyjatkow ,dzieki temu brak memory leak
 		return value;
 	}
+    ///parę słów o zakleszczeniach
+    ///  w miejsciu //1 nastepuje wywolanie zewnetrznej funkcji make_shared
+    /// ktora niesie z sobą zagrożenie związane z zakleszczeniem
+    /// jednak eliminujemy to stosując lock_guard
+    /// zagrożenie jest również w konstruktorach i destruktorze,
+    /// ale przecież obiekt można utworzyć i zniszczyć tylko raz ,więc ok
+
+    /// ale z tego co widzę , pojedynczy stos nie jest najlepszy
+    /// dla zastosowań współbieżnych
 
 	void pop(T& value)
 	{
