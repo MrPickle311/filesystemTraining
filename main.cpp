@@ -3,6 +3,8 @@
 //#include "mutex.hpp"
 //#include "time.hpp"
 #include "queue.hpp"
+#include <filesystem>
+#include <fstream>
 
 int main(int argc,char* argv[])
  {
@@ -12,6 +14,7 @@ int main(int argc,char* argv[])
 	//streamTests("sandbox1/file.txt");
 	//main_m();
     //chrono_main();
-    //queue<int> a;
+	queue_main();
+
 	return 0;
 }
