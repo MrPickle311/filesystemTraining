@@ -132,14 +132,14 @@ private:
 //niszczenie obiektow jest prowadzone w odwrotnej kolejnosci niz
 //ich deklaracja
 
-	static thread_local work_stealing_queue* local_work_queue_;
+	inline static thread_local work_stealing_queue* local_work_queue_;
 						//zastosowanie unikalnego wskaznika sprawia ,ze tylko lokalny watek ma dostep
 						//do lokalnej kolejki, tutaj juz nie trzeba wspolbieznej kolejki uzywac
-	static thread_local unsigned my_index_;
+	inline static thread_local unsigned my_index_;
 private:
 	void worker_thread(unsigned my_index)
 	{
-		my_index = my_index_;
+		my_index_ = my_index;
 		local_work_queue_ = queues_[my_index].get();//inicjalizacja statycznej kolejki
 		//przypisanie do lokalnej zmiennej jednej z kolejek
 		while (!done_)							    //w momencie zakonczenia watku wykonywane sa destruktory pol z modyfikatorami thread_local

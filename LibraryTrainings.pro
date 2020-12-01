@@ -8,6 +8,7 @@ SOURCES += \
 
 HEADERS += \
     Matrix.hpp \
+    bindings_and_algorithms.hpp \
     filesystem.hpp \
     matrix.hpp \
     mutex.hpp \
