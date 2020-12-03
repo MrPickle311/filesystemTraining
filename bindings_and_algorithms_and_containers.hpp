@@ -6,6 +6,7 @@
 #include <memory>
 #include <map>
 #include <numeric>
+#include <random>
 
 char toUpper(char c)
 {
@@ -122,7 +123,64 @@ void bind_testing()
 	std::cout << "\n" << sum << std::endl;
 }
 
+struct pred1
+{
+	bool operator() (size_t a)
+	{
+		return  a > 15;
+	}
+};
+
+void non_modyfing_alghorithms()
+{
+	std::cout << "\nNON MODYFING ALGORITHMS!" << std::endl;
+	std::map<std::string,size_t> elements;
+
+	for(size_t i{0}; i < 30;++i)
+		elements.insert({std::to_string(i),i});
+
+
+	//size_t c1 {std::count(elements.begin(),elements.end(),2)};
+	//count tutaj niespecjalnie zadziala
+	//trzeba uzyc count_if
+
+	auto pred = [](std::pair<const std::string,size_t>& node )->bool
+	{
+		return node.second > 15;
+	};
+
+	size_t c2 {static_cast<size_t>(std::count_if(elements.begin(),elements.end(),pred))};
+	//diffrence type musisz static_castowac!!!!
+
+	std::cout << c2 << std::endl;
+
+	std::cout << '\n';///
+
+	using map_type = std::map<std::string,size_t>;
+	using cmap_type_ref = const std::pair<std::string,size_t>&;
+
+	std::pair<map_type::iterator,map_type::iterator> p {std::minmax_element(elements.begin(),elements.end(),
+														 [&](cmap_type_ref map1,cmap_type_ref map2)
+															{
+																return map1.second < map2.second;
+															}
+														 )};
+	std::cout << p.first->first << " " << p.second->second << std::endl;
+	//aglorytmy z tej rodziny zwracaja iteratory , przyjmuja binarny predykat
+
+	std::cout << "\n" << std::endl;///
+
+	map_type::iterator p1{std::find_if(elements.begin(),elements.end(),[&](cmap_type_ref e)
+		{
+			return e.first == "6";
+		})};
+	std::cout << p1->second << std::endl;
+
+}
+
 void baa_main()
 {
-	bind_testing();
+	//bind_testing();
+	non_modyfing_alghorithms();
+
 }

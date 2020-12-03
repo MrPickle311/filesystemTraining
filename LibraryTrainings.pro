@@ -9,6 +9,7 @@ SOURCES += \
 HEADERS += \
     Matrix.hpp \
     bindings_and_algorithms_and_containers.hpp \
+    designPatterns/factory_method_template.hpp \
     filesystem.hpp \
     matrix.hpp \
     mutex.hpp \
@@ -20,3 +21,5 @@ HEADERS += \
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread
 LIBS += -pthread
+
+DISTFILES +=
