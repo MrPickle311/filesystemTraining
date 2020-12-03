@@ -28,7 +28,32 @@
 //1. wszystkie produkty maja ten sam interfejs
 //2. Dodanie pustej metody wytworczej do klasy kreacyjnej.
 //zwracany typ powinien byc zgodny z interfejsem wspolnym dla produktow
-//3.
+//3. Ekstracja kodu kreacyjnego produktow z ogolnego kodu
+//do metody wytworczej
+//4. Konkretyzacja metod dla poszczegolnych produktow
+//5. Uwazaj ,gdy produkty sa miedzy soba powiazane dziedziczeniem
+// np. PocztaKolejowa , wtedy trzeba obmyslic dodatowy mechanizm
+// predykcji tworzenia nowych typow
+//6. Glowny kreator moze byc abstrakcyjny lub nie ,
+//  bez roznicy
+
+//Zalety:
+//Unikniecie scislego sprzegniecia miedzy tworca ,a produktami
+//Spelnienie zasady Single Responsibility Principle
+//Spelnienei zasady Open/Closed principle
+
+//Wada:
+//Mozliwa zbytnia komplikacja kodu ,przy zbyt duzej ilosci produktow
+
+//Powiazania z innymi wzorcami:
+//1. Projekty stosujace metode wytworcza ewuluuja  stopniowo
+//w Fabryke abstrakcyjna,prototyp lub budowniczego
+//2.Mozliwa kombinacja z Iteratorem w celu tworzenia kilku klas iteratorow
+//3.Prototyp nie uzywa dziedziczenia ,tylko skomplikowanej
+//inicjalizacji klonowanego obiektu,a metoda wytworcza odwrotnie
+//lecz jest obarczona ewentualnymi wadami dziedziczenia
+//4.Jest to wyspecjalizowana metoda szablonowa. Moze stanowic
+//jeden z etapow metody szablonowej
 
 class Product
 {
