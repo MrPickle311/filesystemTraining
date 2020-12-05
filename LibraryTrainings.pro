@@ -18,7 +18,8 @@ HEADERS += \
     stack.hpp \
     streams.hpp \
     thread_pool.hpp \
-    time.hpp
+    time.hpp \
+    utility.hpp
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread
 LIBS += -pthread

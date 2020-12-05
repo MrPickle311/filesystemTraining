@@ -236,8 +236,8 @@ void non_modyfing_alghorithms_with_map()
 	//auto itr3 {std::search(m_elements3.begin(),m_elements3.end(),help_itr2,m_elements3.end())};
 	//mutlimapy to rowniez drzewa binarne ,wiec nic z tego
 
-	std::list<int> collection{1,23,2323,13,213,1,1,1,2,23,23,23,-1,-1};
-	std::list<int> sub_collection{1,2,23,23};
+	std::list<int> collection{1,23,2323,13,213,1,1,1,3,23,23,23,-1,-1};
+	std::list<int> sub_collection{1,3,23,23};
 
 	auto pred1 = [&](const int& e,const size_t& val){
 		return  e % 2 != 0 && val % 2 != 0;
@@ -269,6 +269,35 @@ void non_modyfing_alghorithms_with_map()
 
 	std::cout << '\n';
 
+	auto itr8 {std::search(collection.begin(),collection.end(),sub_collection.begin(),sub_collection.end(),pred1)};
+	std::cout << *itr8<< " " << *(++itr8)  << std::endl;
+	std::cout << '\n';
+	//przy kazdym wywolaniu pred musi zwracac wartosc true
+
+	//find_end dziala tak samo ,lecz zwraca pierwszy element ostatniego podzakresu
+
+	std::cout << "\n\n";
+
+	std::vector<int> v1 {2,35,32,1,2,32,1,4,1};
+	std::vector<int> v2 {32,1};
+
+	auto itr9 {std::find_first_of(v1.begin(),v1.end(),v2.begin(),v2.end())};
+
+	std::cout << *itr9<< " " << *(++itr9)  << std::endl;
+	std::cout << '\n';
+
+	auto pred3 = [=](int elem,int searchElem)
+	{
+		return elem % 2 == 1 && searchElem % 2 == 0;
+	};
+
+	auto itr10 {std::find_first_of(v1.begin(),v1.end(),v2.begin(),v2.end(),pred3)};
+
+	//druga postac zwraca pozycje pierwszego elementu w zakresie beg
+	//end dla ktorego wywolanie pred z dowolna wartoscia z serachBeg i searchEnd
+	//zwraca true
+	std::cout << *itr10<< " " << *(++itr10)  << std::endl;
+	std::cout << '\n';
 
 
 	std::cout << "END!\n" << std::endl;
