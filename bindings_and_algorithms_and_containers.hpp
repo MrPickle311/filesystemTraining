@@ -6,6 +6,7 @@
 #include <memory>
 #include <map>
 #include <numeric>
+#include <list>
 #include <random>
 
 char toUpper(char c)
@@ -131,7 +132,7 @@ struct pred1
 	}
 };
 
-void non_modyfing_alghorithms()
+void non_modyfing_alghorithms_with_map()
 {
 	std::cout << "\nNON MODYFING ALGORITHMS!" << std::endl;
 	std::map<std::string,size_t> elements;
@@ -176,11 +177,106 @@ void non_modyfing_alghorithms()
 		})};
 	std::cout << p1->second << std::endl;
 
+	std::cout << '\n';
+
+	map_type::iterator itr {elements.begin()};
+
+	std::advance(itr,15);
+
+	for(size_t i{0}; i < 5 ;++i)
+		elements.insert(itr,{"5",5});
+
+	std::cout << "Printing map...\n";
+	for(size_t i{0}; i < elements.size() ;++i)
+		std::cout << elements[std::to_string(i)] << " ";
+
+	std::multimap<std::string,size_t> m_elements;
+
+	for(size_t i{0}; i < 5 ;++i)
+		m_elements.insert(itr,{"5",5});
+	for(size_t i{0}; i < 5 ;++i)
+		m_elements.insert(itr,{"1",1});
+	std::cout << "Printing multimap...\n";
+	for(auto& element : m_elements)//tutaj brak funkcji at()
+		std::cout << element.first << " ";
+
+	std::cout << '\n';
+
+	std::pair<std::string,size_t> const pr{"5",5};
+	//std::search_n(m_elements.begin(),m_elements.end(),4,pr);
+	//to sie nigdy nie skompiluje ,gdyz mapa nie dopuszcza kilku wezlow o tym samym kluczu
+	///ogarnac dlaczego ten chuj sie nie kompiluje
+
+	std::cout << '\n';
+
+	std::multimap<std::string,size_t> m_elements2;
+
+	//mapy i multimapy sa automatycznie sortowane !!!
+	//ale i tak ich sie nie przeglada tak jak list ,czy wektorow
+	for(size_t i{0}; i < 5 ;++i)
+		m_elements2.insert(itr,{"5",5});
+	for(size_t i{0}; i < 5 ;++i)
+		m_elements2.insert(itr,{"1",1});
+
+	auto help_itr {m_elements2.begin()};
+	std::advance(help_itr,6);
+
+	auto itr2 {std::search(m_elements2.begin(),m_elements2.end(),help_itr,m_elements2.end())};
+	//widac ,ze aglorytmy standardowe niespecjalnie wspolpracuja z mapami ,ale to dlatego ,ze to drzewa binarne
+
+	std::list<std::pair<std::string,size_t>> m_elements3;
+	for(size_t i{0}; i < 5 ;++i)
+		m_elements3.push_back({"5",5});
+	for(size_t i{0}; i < 5 ;++i)
+		m_elements3.push_back({"1",1});
+
+	auto help_itr2 {m_elements2.begin()};
+	std::advance(help_itr2,6);
+
+	//auto itr3 {std::search(m_elements3.begin(),m_elements3.end(),help_itr2,m_elements3.end())};
+	//mutlimapy to rowniez drzewa binarne ,wiec nic z tego
+
+	std::list<int> collection{1,23,2323,13,213,1,1,1,2,23,23,23,-1,-1};
+	std::list<int> sub_collection{1,2,23,23};
+
+	auto pred1 = [&](const int& e,const size_t& val){
+		return  e % 2 != 0 && val % 2 != 0;
+	};
+
+	auto itr4 {std::search_n(collection.begin(),collection.end(),3,1,pred1)};
+	std::cout << *itr4 << " " << *(++itr4)  << std::endl;
+	std::cout << '\n';
+	//tutaj predykat ma wyzszy priorytet
+
+	auto itr5 {std::search_n(collection.begin(),collection.end(),3,1)};
+	std::cout << *itr5<< " " << *(++itr5)  << std::endl;
+	std::cout << '\n';
+	//zwraca pierwsza pozycje podzasiegu
+
+	std::list<int> sub2{8,86};
+
+	auto itr6 {std::search(collection.begin(),collection.end(),sub_collection.begin(),sub_collection.end())};
+	std::cout << *itr6<< " " << *(++itr6)  << std::endl;
+	std::cout << '\n';
+
+	auto itr7 {std::search(collection.begin(),collection.end(),sub2.begin(),sub2.end())};
+	if(itr7 == collection.end())
+		std::cout << "Not found!\n";
+	if(itr7 == sub2.end())
+		std::cout << "Not found! again! \n";
+	//jezeli spodziewamy sie ,ze dana wartosc/podciag nie zostanie znaleziony ,to
+	//porownujemy z iteratorem .end() , ktory nalezy do przeszukiwanego podciagu
+
+	std::cout << '\n';
+
+
+
+	std::cout << "END!\n" << std::endl;
 }
 
 void baa_main()
 {
 	//bind_testing();
-	non_modyfing_alghorithms();
+	non_modyfing_alghorithms_with_map();
 
 }

@@ -9,6 +9,7 @@ SOURCES += \
 HEADERS += \
     Matrix.hpp \
     bindings_and_algorithms_and_containers.hpp \
+    designPatterns/abstract_factory_template.hpp \
     designPatterns/factory_method_template.hpp \
     filesystem.hpp \
     matrix.hpp \
