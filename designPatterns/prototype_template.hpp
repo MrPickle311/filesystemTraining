@@ -19,7 +19,41 @@
 /// konfiguracjach
 
 //Implementacja:
-//1.
+//1.Stworzenie interfejsu prototypu i dodanie metody clone()
+//lub obdarz cala hierarchie klas taka wirtualna metoda
+//2.Klasa prototypowa musi miec konstruktor kopiujacy
+//3.Kazda klasa musi w metodzie klonujacej wywolac operator new
+//dla swojego typu
+//4.Implementacje rejestru prototypow przechowujacego najczesciej
+//uzywane prototypy -> w formie nowej klasy fabrycznej
+//Potem zamienic bezposrednie wywolania konstruktorow podklas na wywolania
+//metody fabrycznej rejestru prototypow
+
+///Zalety:
+/// 1.Mozliwosc klonowanai obiektow bez koniecznosci sprzegania ze
+/// szczegolami ich konkretnych klas
+/// 2.Redukcja powtarzalnego inicjalizacyjnego kodu
+/// 3.Wygodniejsze produkowanie zlozonych obiektow
+/// 4.Alternatywa dla dziedziczenia ,gdy mamy do czynienia z wczesniej
+/// zdefimiowanymi konfiguracjami zlozonych obiektow
+
+//Wada:
+//Mozliwe trudnosci w klonowaniu
+
+///Powiazania z innymi wzorcami:
+/// 1.//1. Projekty stosujace metode wytworcza ewuluuja  stopniowo
+///w Fabryke abstrakcyjna,prototyp lub budowniczego
+/// 2.Klasy fabryka abstrakcyjna czesto wywodza sie z zestawu metod
+/// wytworczych ,ale mozna uzyc prototypu do skomponowania metod w tych
+/// klasach
+/// 3.Prototyp moze stworzyc historie ,zapisujac kopie polecen
+/// 4.Prototyp nie bazuje na dziedziczeniu ,wiec nie posiada jego wad.
+/// Jednak wymaga skomplikowanej inicjalizacji klonowanego obiektu
+/// Metoda wytworcza bazuje na dziedziczeniu,ale nie wymaga etapu
+/// inicjalizacji
+/// 5.Czasem moze byc prostsza alternatywa dla Pamiatki. Jest to mozliwe
+/// gdy obiekt przechowywany jest nieskomplikowany.Obiekt taki nie
+/// powinien miec powiazan z zewnetrznymi zasobami
 
 enum class Type : size_t
 {
