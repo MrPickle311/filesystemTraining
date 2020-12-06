@@ -22,9 +22,7 @@ int main(int argc,char* argv[])
     //chrono_main();
 	//baa_main();
 
-	//util_main();
-
-	p_main();
+	util_main();
 
 	//thread_pool p;
 

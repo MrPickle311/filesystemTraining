@@ -9,6 +9,7 @@
 #include <iterator>
 #include <algorithm>
 #include <list>
+#include <tuple>
 
 std::optional<int> read_int()
 {
@@ -174,9 +175,55 @@ void variant_test()
 
 }
 
+void tuple_test()
+{
+	std::tuple<int,int,std::string,double> t1;
+
+	t1 = std::make_tuple(1,2,"abc",1.0);
+	auto t2 {std::make_tuple(1,2,"abc",1.0)};
+
+	int x {std::get<0>(t1)};
+	//indeksowanie po parametrach szablonu odbywa sie w TYLKO czasie kompilacji
+
+	std::string str {"meil"};
+
+	auto y {std::make_tuple(std::ref(str))};// otrzymam std::tuple<std::string &>
+	//takie podejscie pozwala na wyodrebnianie wartosci z krotki
+
+	int i;
+	float f;
+	std::string s;
+
+	std::tuple t3{std::ref(i),std::ref(f),std::ref(s)};//dostep do elementow krotki za pomoca niej samej
+	//oraz zmiennych i,f,s
+
+	//lub mozna zrobic to tak
+	std::tuple<int,float,std::string> t4{1,2.0,"se"};
+	int i1;
+	float f1;
+	std::string s1;
+	std::tie(i1,f1,s1) = t4;
+
+
+	//lub ,gdy czesciowo chce sobie wydzielic elementy krotki
+	std::tuple<int,float,std::string> t5{1,2.0,"se"};
+	int i2;
+	std::string s2;
+	std::tie(i2,std::ignore,s1) = t4;
+
+	//nie mozna konwertowac std::initializer_list na krotke
+
+	size_t size {std::tuple_size<decltype(t5)>::value};//zwraca ilosc elementow w krotce
+
+	std::tuple_element<2,decltype(t5)>::type s3; //tuple_element zwraca typ elementu krotki
+
+	auto q {std::tuple_cat(t4,t5)}; //tworzy 6-cio elementowa krotke z 2 innych krotek
+}
+
 void util_main()
 {
 	//optional_tests();
 	//any_test();
-	variant_test();
+	//variant_test();
+	tuple_test();
 }
