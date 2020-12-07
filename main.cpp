@@ -9,6 +9,7 @@
 #include "designPatterns/factory_method_template.hpp"
 #include "designPatterns/abstract_factory_template.hpp"
 #include "designPatterns/prototype_template.hpp"
+#include "designPatterns/adapter_template.hpp"
 
 #include "utility.hpp"
 
@@ -22,7 +23,9 @@ int main(int argc,char* argv[])
     //chrono_main();
 	//baa_main();
 
-	util_main();
+	//util_main();
+
+	a_main();
 
 	//thread_pool p;
 

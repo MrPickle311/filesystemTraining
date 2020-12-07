@@ -10,6 +10,7 @@ HEADERS += \
     Matrix.hpp \
     bindings_and_algorithms_and_containers.hpp \
     designPatterns/abstract_factory_template.hpp \
+    designPatterns/adapter_template.hpp \
     designPatterns/factory_method_template.hpp \
     designPatterns/prototype_template.hpp \
     filesystem.hpp \

@@ -4,6 +4,8 @@
 #include <string>
 #include <unordered_map>
 
+///ZASTOSOWAC MAPY DO SYSTEMU DEBUGOWANIA
+
 //wzorzec w C++ jest od razu dostepny dzieki interfejsowi Cloneable
 //wzorzec ten mozna poznac po metodzie copy(),clone() itd...
 
