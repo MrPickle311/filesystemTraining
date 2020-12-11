@@ -46,7 +46,8 @@ auto get_odd_nmbrs_count(Args... args)
 	size_t count{ 0 };
 	auto pred = [&](auto& var, size_t& count)
 	{
-		if (var % 2 == 1) ++count;
+		if (var % 2 == 1)
+			++count;
 	};
 	(pred(args,count), ...);
 	return count;
