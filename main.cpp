@@ -12,6 +12,7 @@
 #include "designPatterns/adapter_template.hpp"
 #include "designPatterns/bridge_template.hpp"
 #include "designPatterns/composite_template.hpp"
+#include "designPatterns/facade_template.hpp"
 
 #include "utility.hpp"
 
@@ -27,7 +28,7 @@ int main(int argc,char* argv[])
 
 	//util_main();
 
-	c_main();
+	f_main();
 
 	//thread_pool p;
 
