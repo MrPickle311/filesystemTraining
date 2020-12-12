@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <map>
+#include <string>
 
 struct x
 {
@@ -34,41 +36,9 @@ bool op()
 	return false and false and true;
 }
 
-template<typename ... Args>
-auto check(Args... args)
+bool pred()
 {
-	return (... && args);
-}
-
-template<typename ... Args>
-auto get_odd_nmbrs_count(Args... args)
-{
-	size_t count{ 0 };
-	auto pred = [&](auto& var, size_t& count)
-	{
-		if (var % 2 == 1)
-			++count;
-	};
-	(pred(args,count), ...);
-	return count;
-}
-
-template<typename T,typename ... Args>
-void func(T var, Args& ... args)
-{
-	auto l = [&](auto& arg, T& var) {arg = var; };
-	(l(args,var), ...);
-}
-
-#include <sstream>
-
-template<typename ... Args>
-std::ostringstream prnt(std::string separator, Args... args)
-{
-	std::ostringstream os;
-	auto prnt = [&](auto& arg) {os << arg << separator; };
-	(prnt(args), ...);
-	return os;
+	return true or false;
 }
 
 char tab[10]{};
@@ -98,29 +68,70 @@ void f1(int var)
 	}
 }
 
-
-
-template<auto Constans>
-struct Class
+struct Data
 {
-	using T = decltype(Constans);
-	T var = Constans;
-	T vars[Constans];
-	Class() {
-		//std::cout << __PRETTY_FUNCTION__ << std::endl;
-	}
-	void fill_tab(T var)
+	std::map<std::string, double> data;
+	Data(std::initializer_list<std::pair<std::string, double>>&& list):
+		data{ list.begin(), list.end() }
+	{}
+	void show_data() const
 	{
-		for (auto& x : vars)
-			x = var;
+		for (auto x : data)
+			std::cout << x.first << " " << x.second << "%\n";
 	}
-	void prnt_tab(size_t count)
+	bool provides(const std::string& what)
 	{
-		if (count < Constans)
-			for (size_t i = 0; i < count; ++i)
-				std::cout << vars[i] << " ";
-		else for (auto& x : vars)
-			std::cout << x << " ";
+		return data.find(what) != data.end();
 	}
 };
 
+struct char_getter
+{
+	char char_;
+	char_getter()
+	{
+		char_ = getchar();
+	}
+	char operator () () const
+	{
+		return char_;
+	}
+};
+
+void menu()
+{
+	switch (char_getter g{};g())
+	{
+	case 'P':
+		std::cout << "PLAY" << std::endl;
+		break;
+	case 'S':
+		std::cout << "STOP" << std::endl;
+		break;
+	case 'F':
+		std::cout << "FORWARD" << std::endl;
+		break;
+	case 'B':
+		std::cout << "BACK" << std::endl;
+		break;
+	case 'X':
+		std::cout << "EXIT" << std::endl;
+		break;
+	default:
+		std::cout << "BAD CHAR" << std::endl;
+		break;
+	}
+}
+
+class K
+{
+public:
+	int nmbr_;
+	std::string string_;
+	double sth_;
+	K(int var1, std::string var2, double var3) :
+		nmbr_{ var1 },
+		string_{ var2 },
+		sth_{ var3 }
+	{}
+};

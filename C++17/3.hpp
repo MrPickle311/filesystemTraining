@@ -5,6 +5,8 @@
 	#include "2.hpp"
 #endif
 
+#include <iostream>
+#include <string>
 
 namespace galaxy
 {

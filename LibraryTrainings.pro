@@ -9,9 +9,11 @@ SOURCES += \
 HEADERS += \
     C++14/cpp14.hpp \
     C++17/1.hpp \
-    C++17/2.hpp \
     C++17/3.hpp \
     C++17/4.hpp \
+    C++17/constexpr_if.hpp \
+    C++17/struct_binding.hpp \
+    C++17/template_features.hpp \
     Matrix.hpp \
     VariadicTemplates/1.hpp \
     VariadicTemplates/2.hpp \
