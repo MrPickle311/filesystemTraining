@@ -27,6 +27,7 @@ HEADERS += \
     designPatterns/bridge_template.hpp \
     designPatterns/composite_template.hpp \
     designPatterns/decorator_template.hpp \
+    designPatterns/facade_template.hpp \
     designPatterns/factory_method_template.hpp \
     designPatterns/prototype_template.hpp \
     filesystem.hpp \
