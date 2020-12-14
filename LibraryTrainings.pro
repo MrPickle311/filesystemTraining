@@ -29,6 +29,7 @@ HEADERS += \
     designPatterns/decorator_template.hpp \
     designPatterns/facade_template.hpp \
     designPatterns/factory_method_template.hpp \
+    designPatterns/flyweight_template.hpp \
     designPatterns/prototype_template.hpp \
     filesystem.hpp \
     matrix.hpp \
