@@ -139,3 +139,66 @@ double sum(...)
 {
 	return (... + constances);
 }
+
+
+//cwiczonko						tutaj juz nie trzeba uzywac slowa class
+template<typename Type, template<typename F> typename Container>
+class Container_adapter					//   ^^^^^^^^^
+{
+private:
+	Container<Type> con_;
+public:
+	Container_adapter(): con_{}
+	{}
+	template<typename ... Args>
+	void push_back(Args ... vars)
+	{
+		(con_.push_back(vars), ...);
+	}
+	void prnt() const
+	{
+		for (auto x : con_)
+			std::cout << x << " ";
+		std::cout << "\n";
+	}
+	decltype(auto) get_container() const
+	{
+		return con_;
+	}
+};
+
+///W C++17 mam teraz mozliwosc uzycia deklaracji using
+/// (wydobycie publicznego skladnika dziedziczonego w sposob private/public)
+/// w wariadycznym szablonie ,przydaje sie to dla dziedziczenia wielokrotnego
+/// wtedy ,gdy nie bede znac typow bazowych
+
+class Type1
+{
+public:
+	void analysis(Type1* address)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+};
+
+class Type2
+{
+public:
+	void analysis(Type2* address)
+	{
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	}
+};
+
+template<typename ... Args>
+class K :
+		private Args...
+{
+public:
+	using Args::analysis...;
+	//zostanie to rozwiniete przez kompilator do
+	//using Type1::analysis;
+	//using Type2::analysis;
+	///Pamietaj by obiekt funkcje analysis przyjmowaly rozny zestaw argumentow!
+	/// inaczej kompilator zglosi blad!!!
+};

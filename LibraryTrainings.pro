@@ -9,10 +9,10 @@ SOURCES += \
 HEADERS += \
     C++14/cpp14.hpp \
     C++17/1.hpp \
-    C++17/3.hpp \
-    C++17/4.hpp \
     C++17/constexpr_if.hpp \
-    C++17/struct_binding.hpp \
+    C++17/iterator_features.hpp \
+    C++17/milascenious.hpp \
+    C++17/struct_binding_template.hpp \
     C++17/template_features.hpp \
     Matrix.hpp \
     VariadicTemplates/1.hpp \
@@ -32,6 +32,7 @@ HEADERS += \
     designPatterns/flyweight_template.hpp \
     designPatterns/prototype_template.hpp \
     filesystem.hpp \
+    langFeatures/classes_features.hpp \
     matrix.hpp \
     mutex.hpp \
     queue.hpp \

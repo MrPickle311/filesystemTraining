@@ -1,62 +1,6 @@
 #pragma once
-#if __has_include("ss.hpp")
-	#include "ss.hpp"
-#elif __has_include("2.hpp")
-	#include "2.hpp"
-#endif
 
 #include <iostream>
-#include <string>
-
-namespace galaxy
-{
-	namespace solar_system
-	{
-		namespace earth
-		{
-			namespace europe
-			{
-				namespace poland
-				{
-					namespace drzewce
-					{
-						int reader = 2;
-					}
-				}
-			}
-		}
-	}
-}
-
-template<typename Type, template<typename F> typename Container>
-class Container_adapter
-{
-private:
-	Container<Type> con_;
-public:
-	Container_adapter(): con_{}
-	{}
-	template<typename ... Args>
-	void push_back(Args ... vars)
-	{
-		(con_.push_back(vars), ...);
-	}
-	void prnt() const
-	{
-		for (auto x : con_)
-			std::cout << x << " ";
-		std::cout << "\n";
-	}
-	decltype(auto) get_container() const
-	{
-		return con_;
-	}
-};
-
-
-/// <summary>
-/// ////////////////////
-/// </summary>
 
 class super_array
 {
@@ -76,6 +20,8 @@ public:
 			array_[i] = i;
 	}
 };
+
+//w C++17 funkcja end() oraz begin() iteratora moze zwraca rozny typ
 
 class end_itr
 {
@@ -144,4 +90,3 @@ bool operator!= (itr m_itr, end_itr e_itr)
 {
 	return m_itr.current_address() != e_itr.end();
 }
-

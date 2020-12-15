@@ -4,17 +4,24 @@
 #include <string>
 #include <type_traits>
 
-//funkcja constexpr wykorzystuj¹ca type_traits
-template<class T,class F>
-constexpr bool predicate()
+////auto i decltype(auto)
+
+auto g()
 {
-	if (std::is_same<T, F>::value)
-		return true;
-	if (std::is_copy_assignable<T>::value)
-		return true;
-	return false;
+	return 0;
+	//w deklaracji auto/decltype(auto) moge dac tylko jeden typ
+	//inaczej kompilator zglosi blad
+	//return 's';
 }
 
+//decltype(auto) przenosi wszystko , referencje , volatile itd...
+//auto tylko surowy typ
+
+
+//funkcja constexpr wykorzystuj¹ca type_traits
+//tutaj trzeba uzyc decltype(auto) , gdyz gory trudno przewidziec
+//jaki typ zostanie zwrocony, szczegolnie dla szablonu
+//moze to byc nawet referencja albo wskaznik
 template<typename T>
 decltype(auto) operation(T var)
 {
@@ -27,25 +34,29 @@ decltype(auto) operation(T var)
 	return lambda1();
 }
 
-[[deprecated("Ta funkcja sie zestarzala")]]
-void func() 
+///wyrazenia lambda
+
+void lambdas()
 {
-	throw std::exception{};
+	int a {2};
+
+	//teraz mozna tworzyc uogolnione wyrazenia lambda , ktore przyjmuja
+	auto lambda_template = [=](auto x,auto y)
+	{
+		return a < y;
+	};
 }
 
-void func(int a)
-{
+///
 
-}
-
-void fun2([[deprecated("X jest przestarzale !")]] int x, int y)
+template<class T,class F>
+constexpr bool predicate()
 {
-	std::cout << "!!!";
-}
-
-void fun2(size_t x, int y)
-{
-	std::cout << "!!!s";
+	if (std::is_same<T, F>::value)
+		return true;
+	if (std::is_copy_assignable<T>::value)
+		return true;
+	return false;
 }
 
 template<class T,class F >
@@ -61,6 +72,28 @@ private:
 public:
 	typedef typename std::conditional<predicate<T, F>(), T, F>::type type_t;
 };
+
+void fun2([[deprecated("X jest przestarzale !")]] int x, int y)
+{
+	std::cout << "!!!";
+}
+
+void fun2(size_t x, int y)
+{
+	std::cout << "!!!s";
+}
+
+[[deprecated("Ta funkcja sie zestarzala")]]
+void func()
+{
+	throw std::exception{};
+}
+
+//a ta jest nowa
+void func(int a)
+{
+
+}
 
 class K
 {

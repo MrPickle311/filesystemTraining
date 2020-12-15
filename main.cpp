@@ -14,6 +14,7 @@
 #include "designPatterns/composite_template.hpp"
 #include "designPatterns/facade_template.hpp"
 #include "designPatterns/flyweight_template.hpp"
+#include "C++17/struct_binding_template.hpp"
 
 #include "utility.hpp"
 
@@ -29,7 +30,7 @@ int main(int argc,char* argv[])
 
 	//util_main();
 
-	fl_main();
+	externalOperations();
 
 	//thread_pool p;
 
