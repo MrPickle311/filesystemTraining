@@ -15,6 +15,7 @@
 #include "designPatterns/facade_template.hpp"
 #include "designPatterns/flyweight_template.hpp"
 #include "C++17/struct_binding_template.hpp"
+#include "C++14/cpp14.hpp"
 
 #include "utility.hpp"
 

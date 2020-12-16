@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 #include <string>
 #include <type_traits>
 
@@ -23,12 +24,12 @@ auto g()
 //jaki typ zostanie zwrocony, szczegolnie dla szablonu
 //moze to byc nawet referencja albo wskaznik
 template<typename T>
-decltype(auto) operation(T var)
+decltype(auto) operation(T var,T var2)
 {
 	//jak widaæ w lambdach mo¿na sobie przygotowaæ
 	//predefiniowane wartoœci na bazie wczeœniej dostêpnych
-	auto lambda1 = [var = &var, var2 = var + var]()
-	{
+	auto lambda1 = [var = &var, var2 = var + var,var3 {std::move(var2)}]()
+	{	//w lambdzie mozna uzyc nastepujacych wyrazen inicjalizujacych
 		return var + var2;
 	};
 	return lambda1();
@@ -41,13 +42,72 @@ void lambdas()
 	int a {2};
 
 	//teraz mozna tworzyc uogolnione wyrazenia lambda , ktore przyjmuja
+	//parametry typu auto ,czyli dowolnego typu
 	auto lambda_template = [=](auto x,auto y)
 	{
-		return a < y;
+		return a != y;
 	};
+
+	std::cout << lambda_template(5,4);
+	std::cout << lambda_template('2','3');
+	std::string b{'2'};
+	std::string c{"h"};
+
+	//std::cout << lambda_template(b,c);
+	//to nie zadziala niestety
 }
 
 ///
+
+///Funkcje constexpr
+///Ograniczenia funkcji constexpr:
+/// 1.nie mozna za pomoca niej przekazywac informacji asemblerowi
+/// 2.nie mozna uzywac instrukcji goto
+/// 3.nie mozna uzywac bloku try/catch
+/// 4.nie mozna uzywac/tworzyc zmiennych typu nieliteralnego(niezdolnych do utworzenia zmiennych typu constexpr)
+/// 5.nie mozna uzywac instrukcji majacych przydomek static lub thread_local
+/// 6.nie mozna tworzyc definicji takich zmiennych constexpr,ktore nie maja inicjalizacji
+/// 7.instrukcji modyfikujacej zmienna constexpr ,ktorej czas zycia rozpoczal sie w ramach funkcji constexpr
+/// 8.nie mozna wywolywac niestatycznych funkcji skladowych , ktore nie sa constexpr
+/// 9.funkcja constexpr nie moze byc virtual
+/// 10.funkcja constexpr musi zwracac typ literalny
+
+//ROZNICE MIEDZY CONSTEXPR ,A CONST
+
+///Funkcje constexpr nie sa const!!!
+/// int k() const oraz int k() zwracaja inne typy (const int oraz int)
+/// lecz constexpr int k() oraz int k() zwracaja te same typy (int)!
+/// nie mozna tworzyc takich przeciazen
+
+constexpr size_t k(size_t x)
+{
+	size_t m{0};
+	for(size_t i{0}; i < x*x; ++i)
+	{
+		size_t n {i % 4};
+		switch (n)
+		{
+			case 0:
+				++m;
+				break;
+			case 1:
+				m *= 2;
+				break;
+			case 2:
+				m += m*m;
+				break;
+			case 3:
+				m += 9;
+				break;
+		}
+	}
+	return m;
+}
+
+constexpr void l()
+{
+	constexpr size_t g{k(5)};
+}
 
 template<class T,class F>
 constexpr bool predicate()
@@ -58,6 +118,8 @@ constexpr bool predicate()
 		return true;
 	return false;
 }
+
+///
 
 template<class T,class F >
 class Object_adapter
