@@ -31,6 +31,7 @@ HEADERS += \
     designPatterns/factory_method_template.hpp \
     designPatterns/flyweight_template.hpp \
     designPatterns/prototype_template.hpp \
+    designPatterns/proxy_template.hpp \
     filesystem.hpp \
     langFeatures/classes_features.hpp \
     matrix.hpp \

@@ -168,3 +168,28 @@ public:
 	[[deprecated("przestarzaly skladnik!")]]
 	int drawer;
 };
+
+///Szablony definicji zmiennych
+///Stosuje sie to glownie przy szablonach innych funkcji
+
+template<typename T>
+constexpr T var1;
+
+template<>
+std::string var1<std::string> {"HELLO!"};
+
+template<typename T>
+constexpr T  todo(T arg)
+{
+	return arg + var1<T>;
+}
+
+struct SthData
+{
+	//szablony definicji zmiennych mozna umieszczac w typach w taki oto sposob
+	template<typename T>
+	static constexpr T var1{};
+
+	template<typename T>
+	static T var2;
+};

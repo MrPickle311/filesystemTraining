@@ -16,6 +16,7 @@
 #include "designPatterns/flyweight_template.hpp"
 #include "C++17/struct_binding_template.hpp"
 #include "C++14/cpp14.hpp"
+#include "designPatterns/proxy_template.hpp"
 
 #include "utility.hpp"
 
@@ -31,7 +32,7 @@ int main(int argc,char* argv[])
 
 	//util_main();
 
-	externalOperations();
+	pr_main();
 
 	//thread_pool p;
 
