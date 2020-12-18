@@ -32,6 +32,7 @@ HEADERS += \
     designPatterns/flyweight_template.hpp \
     designPatterns/prototype_template.hpp \
     designPatterns/proxy_template.hpp \
+    designPatterns/responsibility_chain_template.hpp \
     filesystem.hpp \
     langFeatures/RTTI_dynamic_cast.hpp \
     langFeatures/classes_features.hpp \
