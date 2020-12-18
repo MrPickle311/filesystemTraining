@@ -33,7 +33,9 @@ HEADERS += \
     designPatterns/prototype_template.hpp \
     designPatterns/proxy_template.hpp \
     filesystem.hpp \
+    langFeatures/RTTI_dynamic_cast.hpp \
     langFeatures/classes_features.hpp \
+    langFeatures/multiinheritance.hpp \
     matrix.hpp \
     mutex.hpp \
     queue.hpp \

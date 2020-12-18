@@ -17,6 +17,8 @@
 #include "C++17/struct_binding_template.hpp"
 #include "C++14/cpp14.hpp"
 #include "designPatterns/proxy_template.hpp"
+#include "langFeatures/multiinheritance.hpp"
+#include "langFeatures/RTTI_dynamic_cast.hpp"
 
 #include "utility.hpp"
 
@@ -32,8 +34,7 @@ int main(int argc,char* argv[])
 
 	//util_main();
 
-	pr_main();
-
+	cast_operations();
 	//thread_pool p;
 
 	return 0;
