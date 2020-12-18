@@ -42,11 +42,35 @@
 
 /*Powiązania z innymi wzorcami:
  * 1.Łańcuch zobowiązań,Polecenie,Mediator,Obserwator dotyczą różnych sposobów na
- * łączenie nadawców z odbiorcami żądań:
- *
+ *łączenie nadawców z odbiorcami żądań:
+ *(*) Łańcuch zobowiązań przekazuje żadanie sekwencyjnie wzdłuż dynamicznego łańcucha
+ *potencjalnych odbiorców ,aż któryś je obsłuży
+ *(*) Polecenie pozwala nawiązywać jednokierunkowe połączenia pomiędzy nadawcami i
+ *odbiorcami
+ *(*) Mediator eliminuje bezpośrednie połączenia pomiędzy nadawcami ,a odbiorcami ,
+ *zmuszając ich do komunikacji za pośrednictwem obiektu mediator
+ *(*) Obserwator pozwala odbiorcom dynamicznie zasubskrybować i zrezygnować z
+ *subskrypcji żądań
+ * 2.Łańcuch łączy się często z Kompozytem . W takim przypadku ,gdy komponent-liść
+ *otrzymuje żądanie , może je przekazać poprzeż łańcuch nadrzędnych komponentów
+ *aż do korzenia drzewa obiektów
+ * 3.Obsługujący w Łańuchu zobowiązań mogą być zaimplementowani jako Polecenia. Można
+ *wówczas wykonać wiele różnych działań reprezentowanych jako żądania na tym samym
+ *obiekcie-kontekście.Można jeszcze to zrealizować tak,że samo żądanie jest Poleceniem
+ *W takim przypadku można wykonać to samo działanie na łańcuchu różnych kontekstów
+ * 4.Łańuch i Dekorator mają bardzo podobne struktury klas.Oba wzorce bazują na
+ *rekursywnej kompozycji. Obsługujący łańcucha mogą wykonywać działania niezależnie od
+ *siebie. Mogą zatrzymać przetwarzanie łańucha w dowolnym momencie.Różne Dekoratory
+ *mogą rozszerzać  obowiązki obiektu zachowując zgodność z interfejsem bazowym.
+ *Dekoratory nie mają możliwości przerwania przepływu żądania
+ */
+
+
 #include <iostream>
 #include <string>
 #include <vector>
+
+
 
 /*
  * Klasa interfesjowa Handler deklaruje metody potrzebne do budowy łańcucha
