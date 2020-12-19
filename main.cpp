@@ -36,7 +36,7 @@ int main(int argc,char* argv[])
 
 	//util_main();
 
-	cr_main();
+	cast_operations();
 	//thread_pool p;
 
 	return 0;

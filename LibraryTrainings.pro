@@ -36,7 +36,9 @@ HEADERS += \
     filesystem.hpp \
     langFeatures/RTTI_dynamic_cast.hpp \
     langFeatures/classes_features.hpp \
+    langFeatures/exceptions.hpp \
     langFeatures/multiinheritance.hpp \
+    langFeatures/resource_management.hpp \
     matrix.hpp \
     mutex.hpp \
     queue.hpp \

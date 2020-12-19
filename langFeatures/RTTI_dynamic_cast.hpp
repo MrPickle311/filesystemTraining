@@ -138,6 +138,24 @@ void callObjToReference(T* ptr)//tutaj już należy użyć bloków try_catch,co 
 
 ///By RTTI działało istnieje potrzeba definiowania wirtualnych destruktorów
 /// lub innej wirtualnej funkcji
+/// Nie używaj typeid() oraz dynamic_cast<>() w konstruktorach i destruktorach
+/// gdyż obiekty nie są jeszcze utworzone!!!
+
+/*
+ * Wystrzegaj się używania poniższego szablonu , nie powinno się używać poniższej
+ * konstrukcji dlatego ,że nie zostanie złapany wyjątek std::bad_cast
+ * Dlaczego? Dlatego : dynamic_cast przeszukuje całe drzewo dziedziczenia w celu
+ * sprawdzenia,czy rzutowanie jest poprawne, wyrażenie typeid() zwraca info o
+ * obiekcie najbardziej pochodnym całego drzewa. Niby szybsze ,ale cholernie niebezpieczne
+ */
+
+template <typename Dest, typename Src>
+Dest* fast_dynamic_cast(Src* src){
+  if(typeid(*src) == typeid(Dest)){
+	return static_cast<Dest*>(src);
+  }
+  throw std::bad_cast();
+}
 
 ///Klasy powodujące niejednoznaczność
 
@@ -173,6 +191,10 @@ void ambigious_test()
 	//wiem z jakiej BaseClass jadę
 }
 
+//do typeid()
+void foo();
+void bar(int a,int b,std::string c);
+
 void typeid_test()
 {
 	std::cout << "\ntypeid tests\n";
@@ -191,6 +213,58 @@ void typeid_test()
 	{
 		std::cout << "Blad typeid  : " << ti.what() << '\n';
 	}
+
+	try
+	{
+		std::string s { typeid (nullptr).name() };
+		std::cout <<s << '\n';
+	}
+	catch (std::bad_typeid& ti)
+	{
+		std::cout << "Blad typeid raw nullptr : " << ti.what() << '\n';
+	}
+
+	//UWAGA, poniższe wyrażenie spowoduje undefined behaviour
+	//nie zostanie wychwycone przez try-catch
+
+//	try
+//	{
+//		std::string* b {nullptr};
+//		typeid (b->begin());
+//	}
+//	catch (std::bad_typeid& ti)
+//	{
+//		std::cout << "Blad typeid raw nullptr : " << ti.what() << '\n';
+//	}
+
+	// ! Funkcja hash_code() zwraca unikaotowy hash_code
+	//dla danego typu
+
+
+	//Jak typeid() traktuje const i volatile?
+
+	if(typeid (int) == typeid (const int))
+		std::cout << "ok1!\n";
+	if(typeid (int * const) == typeid (int*)) //stały wskaźnik
+		std::cout << "ok2!\n";
+	//jednak stały wskaźnik i niestały wskaźnik ,to dla
+	//RTTI inne typy
+	if(! (typeid (int const*) == typeid (int*)))
+		std::cout << "ok3!\n";
+
+	//Również funkcje można potraktować typeid()
+
+	std::cout << typeid (foo).name() << std::endl;
+	std::cout << typeid (void(*)()).name() << std::endl;
+	std::cout << typeid (bar).name() << std::endl;
+	std::cout << typeid (void(*)(int,int)).name() << std::endl;
+
+//	FvvE  # Funkcja zwracająca Void i przyjmująca Void
+//	PFvvE # Wskaźnik (Pointer) na Funkcję zwracającą Void i przyjmującą Void
+//	FviiE # Funkcja zwracająca Void i przyjmująca dwa obiekty typu Int
+//	PFviiE # Wskaźnik (Pointer) na Funkcję zwracający Void i przyjmujący dwa obiekty typu Int
+
+
 
 }
 
