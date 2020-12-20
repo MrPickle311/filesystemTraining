@@ -25,6 +25,7 @@ HEADERS += \
     designPatterns/abstract_factory_template.hpp \
     designPatterns/adapter_template.hpp \
     designPatterns/bridge_template.hpp \
+    designPatterns/command_template.hpp \
     designPatterns/composite_template.hpp \
     designPatterns/decorator_template.hpp \
     designPatterns/facade_template.hpp \
