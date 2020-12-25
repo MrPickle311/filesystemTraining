@@ -39,6 +39,7 @@ HEADERS += \
     designPatterns/factory_method_template.hpp \
     designPatterns/flyweight_template.hpp \
     designPatterns/iterator_template.hpp \
+    designPatterns/mediator_template.hpp \
     designPatterns/prototype_template.hpp \
     designPatterns/proxy_template.hpp \
     designPatterns/responsibility_chain_template.hpp \
