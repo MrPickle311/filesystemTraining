@@ -3,6 +3,21 @@
 #include <iostream>
 #include <string>
 
+//reinterpret_cast<>() zamienia jakiś typ na inny niespokrewniony typ w taki sposób ,że mają taki sam
+//układ bitów , to rzuotwanie operuje wyłącznie na wskaźnikach
+//const_cast<>() służy do wykonywania konwersji pomiędzy takimi samymi typami ,które różnią się tylko
+//słowami const lub volatile
+
+void cast_test()
+{
+	std::string const b{"23sadsadsad"};
+	std::string* a {const_cast<std::string*>(&b)}; //też wymaga typów wskaźnikowych
+
+	int c{2121213};
+
+	std::string* z{reinterpret_cast<std::string*>(&c)};
+}
+
 struct B
 {
 
@@ -155,6 +170,17 @@ Dest* fast_dynamic_cast(Src* src){
 	return static_cast<Dest*>(src);
   }
   throw std::bad_cast();
+}
+
+//jednak do jawnego konwertowania wartości skalarnych warto użyć takiej funkcji
+
+template<typename Target,typename Source>
+Target narrow_cast(Source x)
+{
+	auto r = static_cast<Target>(x);
+	if(static_cast<Source>(r) != x)
+		return std::runtime_error{"Operacja narrow_cast<>() z typu nie powiodła się"};
+	return r;
 }
 
 ///Klasy powodujące niejednoznaczność

@@ -169,12 +169,33 @@ void z()
 	//zadziała , std::move wykonuje rzutowanie opisane szablonem powyżej, jednak robi to lepiej
 }
 
+//forwarding references
 
+//nie jest tym samym ,co rvalue
+//forwarding references preserve the value category of a function argument
+//making it possible to forward
 
+//forwarding references są to:
+//1.parametrz funkcji szablonowej zadeklarowany jako referencja do rvalue ,ale musi
+//być typu parametru szablonowego T, nie może być const!!!
 
+template<typename T>
+void c(T&& x) // x jest forwarding reference, więc może być przeprowadzony
+{
+	std::cout << x;
+}
 
+template<typename T>
+struct MNB
+{
+	template<typename U>
+	MNB(T&& x,U&& y,int* p); // x nie jest forwarding referencje ,gdyż nie jest typu
+							 //szablonu konstruktora ,jest typu T ,nie U
+							//za to y jest forwarding reference ,gdyż jest typu U
+							//konstruktor jest funkcją parametryzowaną typem U
+};
 
-
+//auto&& s = foo(); też jest forwarding reference ,gdyż foo() może być rvalue lub lvalue
 
 
 

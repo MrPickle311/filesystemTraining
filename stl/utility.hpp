@@ -220,10 +220,53 @@ void tuple_test()
 	auto q {std::tuple_cat(t4,t5)}; //tworzy 6-cio elementowa krotke z 2 innych krotek
 }
 
+//std::forward oraz różnica między nim a std::move
+
+//std::forward wraz z forwarding reference przeprowadza parametry w niezmienionej postaci tzn. lvalue pozostawia
+//lvalue , a rvalue pozostawia rvalue
+//,stosuje się go do
+//forwarding reference
+//std::forward stosuje się głównie przy szablonach ,gdy nie wiadomo ,czy argument
+//jakiejś funkcji szablonowej(również konstruktora) będzie rvalue ,czy lvalue
+//w skrócie :: std::forward idealnie przekazuje argumenty, tylko z rvalue robi rvalue
+
+//std::move przenosi obiekty
+
+void fr(const int& arg)
+{
+	std::cout<< "by lvalue!\n";
+}
+
+void fr(int&& arg)
+{
+	std::cout << "by rvalue!\n";
+}
+
+template<typename T>
+void frw(T&& arg)// T&& to jest tz. forwarding reference
+{
+	std::cout << "via std::forward\n";
+	fr(std::forward<T>(arg));
+	std::cout << "via std::move\n";
+	fr(std::move(arg));
+	std::cout << "by simple passing\n";
+	fr(arg);
+}
+
+void forward_test()
+{
+	std::cout << "sending rvalue = 3\n";
+	frw(5);//tutaj arg będzie rvalue
+	std::cout << "sending lvalue = 3\n";
+	int a {5};//tutaj arg będzie lvalue
+	frw(a);
+}
+
 void util_main()
 {
 	//optional_tests();
 	//any_test();
 	//variant_test();
-	tuple_test();
+	//tuple_test();
+	forward_test();
 }

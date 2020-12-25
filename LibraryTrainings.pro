@@ -22,6 +22,13 @@ HEADERS += \
     VariadicTemplates/5.hpp \
     VariadicTemplates/6.hpp \
     bindings_and_algorithms_and_containers.hpp \
+    concurrency/interrupt_thread.hpp \
+    concurrency/joining_thread.hpp \
+    concurrency/mutex.hpp \
+    concurrency/queue.hpp \
+    concurrency/stack.hpp \
+    concurrency/thread_pool.hpp \
+    concurrency/time.hpp \
     designPatterns/abstract_factory_template.hpp \
     designPatterns/adapter_template.hpp \
     designPatterns/bridge_template.hpp \
@@ -31,6 +38,7 @@ HEADERS += \
     designPatterns/facade_template.hpp \
     designPatterns/factory_method_template.hpp \
     designPatterns/flyweight_template.hpp \
+    designPatterns/iterator_template.hpp \
     designPatterns/prototype_template.hpp \
     designPatterns/proxy_template.hpp \
     designPatterns/responsibility_chain_template.hpp \
@@ -38,12 +46,17 @@ HEADERS += \
     langFeatures/RTTI_dynamic_cast.hpp \
     langFeatures/classes_features.hpp \
     langFeatures/exceptions.hpp \
+    langFeatures/exceptions_vol2.hpp \
     langFeatures/multiinheritance.hpp \
     langFeatures/resource_management.hpp \
     matrix.hpp \
     mutex.hpp \
     queue.hpp \
     stack.hpp \
+    stl/bindings_and_algorithms_and_containers.hpp \
+    stl/filesystem.hpp \
+    stl/streams.hpp \
+    stl/utility.hpp \
     streams.hpp \
     thread_pool.hpp \
     time.hpp \
