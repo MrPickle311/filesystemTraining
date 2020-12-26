@@ -40,16 +40,21 @@ HEADERS += \
     designPatterns/flyweight_template.hpp \
     designPatterns/iterator_template.hpp \
     designPatterns/mediator_template.hpp \
+    designPatterns/memento_template.hpp \
     designPatterns/prototype_template.hpp \
     designPatterns/proxy_template.hpp \
     designPatterns/responsibility_chain_template.hpp \
     filesystem.hpp \
     langFeatures/RTTI_dynamic_cast.hpp \
+    langFeatures/class_hierarchies_1.hpp \
+    langFeatures/class_hierarchies_2.hpp \
     langFeatures/classes_features.hpp \
     langFeatures/exceptions.hpp \
     langFeatures/exceptions_vol2.hpp \
     langFeatures/multiinheritance.hpp \
+    langFeatures/operators.hpp \
     langFeatures/resource_management.hpp \
+    langFeatures/template_hierarchies.hpp \
     matrix.hpp \
     mutex.hpp \
     queue.hpp \

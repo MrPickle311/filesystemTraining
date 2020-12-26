@@ -21,11 +21,28 @@
 
 #include "langFeatures/multiinheritance.hpp"
 #include "langFeatures/RTTI_dynamic_cast.hpp"
+#include "langFeatures/operators.hpp"
 
 #include "stl/utility.hpp"
 
+class x
+{
+public:
+	int a;
+};
+
+class z:
+		public x
+{
+public:
+	int b;
+};
+
 int main(int argc,char* argv[])
 {
-	util_main();
+	//x& zx {*new z};
+	//niby fajnie ,że tak można,ale istnieje możliwy wyciek pamięci
+
+	//operator_test();
 	return 0;
 }
