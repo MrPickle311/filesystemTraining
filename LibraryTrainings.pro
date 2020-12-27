@@ -1,5 +1,5 @@
 TEMPLATE = app
-CONFIG += console c++17
+CONFIG += console c++20
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -53,8 +53,11 @@ HEADERS += \
     langFeatures/exceptions_vol2.hpp \
     langFeatures/multiinheritance.hpp \
     langFeatures/operators.hpp \
+    langFeatures/preprocesor.hpp \
     langFeatures/resource_management.hpp \
+    langFeatures/specialisations.hpp \
     langFeatures/template_hierarchies.hpp \
+    langFeatures/template_hierarchies_vol2.hpp \
     matrix.hpp \
     mutex.hpp \
     queue.hpp \
@@ -71,4 +74,5 @@ HEADERS += \
 QMAKE_CXXFLAGS += -std=c++0x -pthread
 LIBS += -pthread
 
-DISTFILES +=
+DISTFILES += \
+    compile_features.txt

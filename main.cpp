@@ -1,10 +1,3 @@
-//#include "filesystem.hpp"
-//#include "streams.hpp"
-//#include "mutex.hpp"
-//#include "time.hpp"
-//#include "thread_pool.hpp"
-#include <list>
-
 #include "designPatterns/factory_method_template.hpp"
 #include "designPatterns/abstract_factory_template.hpp"
 #include "designPatterns/prototype_template.hpp"
@@ -25,24 +18,10 @@
 
 #include "stl/utility.hpp"
 
-class x
-{
-public:
-	int a;
-};
-
-class z:
-		public x
-{
-public:
-	int b;
-};
-
 int main(int argc,char* argv[])
 {
-	//x& zx {*new z};
-	//niby fajnie ,że tak można,ale istnieje możliwy wyciek pamięci
-
-	//operator_test();
+	std::cout << __FILE__ << " " << __FUNCTION__ << " " << __LINE__ << '\n';
+	std::cout << __PRETTY_FUNCTION__ << '\n';
+	//std::cout << __FILE_NAME__ << '\n';
 	return 0;
 }

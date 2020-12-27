@@ -1,0 +1,26 @@
+każdy plik źródłowy musi być przekształcony do tzw. object file
+te pliki są następnie linkowane do bibliotek i plików wykonywalnych
+
+1.Preprocesor
+Pierwsze ,co robi kompilator na plikach źródłwoych do odpala na nich Preprocesor.
+Jedynie pliki źródłowe są przekazywane do kompilatora , pliki nagłówkowe nie są
+
+pliki źródłowe są otwierane tylko jeden raz przez Preprocesor , pliki nagłówkowe
+są wiele razy otwierane ,gdyż są załączane do plików źródłowych
+
+Dla każdego pliku źródłowego Preprocesor tworzy jednostkę translacji poprzez wstawianie
+zawartości(chyba pliku nagłówkowego) gdy znajdzie on dyrektywę #include
+oraz będzie wywalać zawartość z bloków kompilacji warunkowej dla których będzie false
+oraz ogarnia makra
+
+Gdy Preprocesor skończy budować jednostkę translacji ,to zaczyna się etap kompilacji
+oraz budowa object files
+
+
+############
+By uzyskać tę jednostkę translacji można użyć opcji -E przy g++ wraz z -o by nadać nazwę
+g++ -E main.cpp -o main.ii
+użycie g++ -c pozwala nam uzyskać object files
+jednostka translacji będzie zawierać wszystkie pliki nagłówkowe potrzebne do uruchomienia
+jej
+

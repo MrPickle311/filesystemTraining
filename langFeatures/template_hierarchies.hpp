@@ -54,3 +54,84 @@ void f(Ptr<Circle> pc)
 	Ptr<Circle> pc2 {ps}; // powinno być błędem
 }
 
+//Parametryzowanie dużych hierarchii klas zawierających wiele funkcji wirtualnych to zły pomysł
+//przykład
+template<typename Color_scheme, typename Canvas>
+class Shape
+{
+//...
+};
+template<typename Color_scheme, typename Canvas>
+class Circle :
+		public Shape
+{
+//...
+};
+
+template<typename Color_scheme, typename Canvas>
+class Triangle:
+		public Shape
+{
+	//...
+};
+
+//generalnie lepiej nie przesadzać z parametryzacją ,w szczególności jeśli parametry są szczegółem implementacyjnym
+//starać się unikać parametrów dotyczących kilku składowych , jeśli parametry są używane przez kilka funkcji składowych
+//to lepiej uczynić te metody jako szablony
+
+class Shape
+{
+	template<typename Color_scheme , typename Canvas>
+	void configure(const Color_scheme&, const Canvas&);
+	//...
+};
+
+//Dzięki szablonom można tworzyć≥ bezpieczne pod kątem typów interfejsy
+//wywołania funkcji wirtualnych są kosztowne
+//nie używaj void* gdyż nie jest bezpieczne pod kątem typów oraz zwykle trzeba implementować jakieś deskryptory
+//typowe , co zwiększa narzut pamięciowy jak i wydajnościowy
+
+template<typename N> //implementacja
+struct Node_base
+{ // nie wie o Val (dane użytkownika)
+	N* left_child;
+	N* right_child;
+	Node_base();
+	void add_left(N* p)
+	{
+		if (left_child==nullptr)
+			left_child = p;
+		else
+		//...
+	}
+	//...
+};
+
+template<typename Val> //interfejs
+struct Node:
+		Node_base<Node<Val>>  // użycie klasy pochodnej jako części jej własnej bazy
+{
+	Val v;
+	Node(Val vv);
+	//...
+};
+
+using My_node = Node<double>;
+
+//tutaj jednak użytkownik musi znać operacje na Node_base,gdyż sam musi na razie równoważyć drzewo
+void user(const vector<double>& v)
+{
+	My_node root;
+	int i = 0;
+
+	for (auto x : v)
+	{
+	auto p = new My_node{x};
+	if (i++%2) // wybór miejsca wstawiania
+		root.add_left(p);
+	else
+		root.add_right(p);
+	}
+}
+
+
