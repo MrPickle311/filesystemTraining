@@ -1,5 +1,5 @@
 TEMPLATE = app
-CONFIG += console c++20
+CONFIG += console c++17
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -41,6 +41,7 @@ HEADERS += \
     designPatterns/iterator_template.hpp \
     designPatterns/mediator_template.hpp \
     designPatterns/memento_template.hpp \
+    designPatterns/observer_template.hpp \
     designPatterns/prototype_template.hpp \
     designPatterns/proxy_template.hpp \
     designPatterns/responsibility_chain_template.hpp \
@@ -63,6 +64,7 @@ HEADERS += \
     queue.hpp \
     stack.hpp \
     stl/bindings_and_algorithms_and_containers.hpp \
+    stl/exeptions.hpp \
     stl/filesystem.hpp \
     stl/streams.hpp \
     stl/utility.hpp \
