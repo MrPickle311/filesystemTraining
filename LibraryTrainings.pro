@@ -45,6 +45,7 @@ HEADERS += \
     designPatterns/prototype_template.hpp \
     designPatterns/proxy_template.hpp \
     designPatterns/responsibility_chain_template.hpp \
+    designPatterns/state_template.hpp \
     filesystem.hpp \
     langFeatures/RTTI_dynamic_cast.hpp \
     langFeatures/class_hierarchies_1.hpp \

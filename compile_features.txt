@@ -24,3 +24,93 @@ użycie g++ -c pozwala nam uzyskać object files
 jednostka translacji będzie zawierać wszystkie pliki nagłówkowe potrzebne do uruchomienia
 jej
 
+####################################################################################
+
+Statyczne biblioteki( archiwa ) .a lub .lib
+
+Jest to paczka skompilowanych object files
+Są częścią pliku wykonywalnego
+
+Są dołączane podczas statycznego linkowania -> linker ekstrahuje kopie wymaganych
+modułów obiektów z biblioteki do pliku wykonywalnego
+
+Statyczne linkowanie musi być wykonywane ,gdy moduły są rekompilowane
+Wszystkie moduły wymagane przez program są czasami statycznie linkowane i kopiowane
+do pliku wykonywalnego -> statyczne budowanie
+
+Konsekwencje statycznych bibliotek:
+1.Jest tylko linkowana do aplikacji ,kod tej biblioteki jest osadzony w aplikacji
+2.Każdy plik wykonywalny ma własną kopię biblioteki statycznej, więc jeśli produkt ma
+kilka plików wykonywalnych ,to do każdego trzeba dodać tę bibliotekę ,co zwieksza rozmiary
+produktu. Ale kopiowane są tylko te object files z biblioteki, które są rzeczywiście u
+żywane przez plik wykonywalny
+3.Odporność na konfilt nazw
+4.Jednak by dokonać aktualizacji aplikacji wymagana jest zamiana całego pliku wykonywalnego
+
+####################################################################################
+
+Dynamiczne biblioteki ( shared libraries ) .so lub .dll
+
+Wspołdzielone przez wiele plików wykonywalnych, object files są współdzielone
+Moduły są ładowane do ramu ,zamiast linkowania ich do apki
+
+Wymagają dynamicznego linkera
+Na linuksie jest to ld.so
+Wspierają zmienne środowiskowe ,by modyfikować swoje zachowanie
+
+Konsekwencje ich używania:
+1.One oraz nasze biblioteki , które od nich zależą muszą być dystryubowane z naszą apką
+2.Wrażliwość na aktualizacje oraz na zgubienie ich
+3.Jeśli więcej aplikacji korzysta z tych bibliotek ,to są bardziej efektywne pod kątem
+miejsca na dysku.Jeśli jednak apka korzysta tylko z malutkiej części statycznej biblioteki
+to będzie ona bardziej efektywna od dynamicznej
+4.Mogą również mniej żreć pamięci ram ,gdyż są ładowane tam tylko raz
+5.Jeśli nadejdzie aktualizacja ,to trzba podmienić tylko .dll bez ponownego rekompilowania
+6.Pozwalają na ich ładowanie na żądanie ,co pozwala implementować pluginy
+
+####################################################################################
+
+Budowanie bibliotek statycznych
+(jak chcesz samodzielnie zbudować system kompilacji ,to ogarnij shella )
+1.
+g++ -c **** tworzenie object file .o z każdego .cpp ( można dać kilka na raz)
+np. g++ -c xd.c++
+2.Używam polecenia ar np. ar r mylib.a file.o main.o -> otrzymuję biblioteke statyczną
+3.Mogę teraz zbudować plik wykonywalny poprzez g++ -o main mylib.a -lm
+-lm <- bez tego działa tak samo , nie wiem do czego służy
+Uwaga! do polecenia ar trzeba dać artrybut r by nadać prawo do nadpisywania
+budowanie statycznej biblioteki
+
+####################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
