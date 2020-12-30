@@ -1,5 +1,5 @@
 TEMPLATE = app
-CONFIG += console c++17
+CONFIG += console c++20
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -70,6 +70,7 @@ HEADERS += \
     stl/bindings_and_algorithms_and_containers.hpp \
     stl/exeptions.hpp \
     stl/filesystem.hpp \
+    stl/iterators.hpp \
     stl/streams.hpp \
     stl/utility.hpp \
     streams.hpp \
