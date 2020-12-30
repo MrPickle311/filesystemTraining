@@ -18,10 +18,9 @@
 
 #include "stl/utility.hpp"
 
+#define sad __declspec(dllexport)
+
 int main(int argc,char* argv[])
 {
-	std::cout << __FILE__ << " " << __FUNCTION__ << " " << __LINE__ << '\n';
-	std::cout << __PRETTY_FUNCTION__ << '\n';
-	//std::cout << __FILE_NAME__ << '\n';
 	return 0;
 }

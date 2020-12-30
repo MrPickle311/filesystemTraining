@@ -46,6 +46,8 @@ HEADERS += \
     designPatterns/proxy_template.hpp \
     designPatterns/responsibility_chain_template.hpp \
     designPatterns/state_template.hpp \
+    designPatterns/strategy_template.hpp \
+    designPatterns/template_method_template.hpp \
     filesystem.hpp \
     langFeatures/RTTI_dynamic_cast.hpp \
     langFeatures/class_hierarchies_1.hpp \
@@ -53,6 +55,7 @@ HEADERS += \
     langFeatures/classes_features.hpp \
     langFeatures/exceptions.hpp \
     langFeatures/exceptions_vol2.hpp \
+    langFeatures/inline.hpp \
     langFeatures/multiinheritance.hpp \
     langFeatures/operators.hpp \
     langFeatures/preprocesor.hpp \

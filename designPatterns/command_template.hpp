@@ -61,6 +61,7 @@
  * 4.Prototyp może pomóc stworzyć historię,zapisując kopie Poleceń
  * 5.Wizytator można traktować jako potężniejszą wersję Polecenia.Jego obiekty(wizytatora)
  *mogą wykonywać różne polecenia na obiektach różnych klas
+ */
 
 #include <string>
 #include <iostream>

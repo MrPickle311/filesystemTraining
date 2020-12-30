@@ -1,3 +1,53 @@
+Nagłówki
+W efekcie dodawania instrukcji #include do pliku źródłowego rekurencyjnie zostają
+przeklejone wszystkie pliki nagłówkowe -> i tak się znajdują definicje
+
+forward declaration -> działa wszędzie tam ,gdzie nie potrzebują rozmiaru danego obiektu
+np. wskaźniki i referencje będą ok dla poniższego przykładu , ale również metody mogą
+zwracać takie niezdefiniowane obiekty (nawet bez & * )
+
+class A;
+
+class B
+{//...};
+
+W pliku źródłowym należy zadeklarować również istnienie wykorzystywanych pól/metod.
+
+ale takie coś nie zadziała
+
+// A.hpp
+    #pragma once
+
+    #include "B.hpp"
+
+    class B;
+
+    class A {
+        B b;
+    };
+
+// B.hpp
+    #pragma once
+
+    #include "A.hpp"
+
+    class A;
+
+    class B {
+        A a;
+    };
+
+kompilator wie tylko ,że taki typ istnieje ,lecz w takiej sytuacji nie jest w stanie
+wydedukować rozmiaru obiektu
+
+agłówek załączany do innego nagłówka staje się jego zależnością, co z tym związane
+jeśli załączam po kolei a->b->c ,to jeśli zmodyfikuję a ,to cały łańcuch zostaje
+przekompilowany
+
+UWAGA! W celu zmniejszenia czasu kompilacji staraj się umieszać pliki nagłówkowe w plikach
+źródłowych
+
+####################################################################################
 każdy plik źródłowy musi być przekształcony do tzw. object file
 te pliki są następnie linkowane do bibliotek i plików wykonywalnych
 
@@ -12,6 +62,53 @@ Dla każdego pliku źródłowego Preprocesor tworzy jednostkę translacji poprze
 zawartości(chyba pliku nagłówkowego) gdy znajdzie on dyrektywę #include
 oraz będzie wywalać zawartość z bloków kompilacji warunkowej dla których będzie false
 oraz ogarnia makra
+
+Po zakończeniu preprocessingu wszystkie dyrektywy Preprocesora zostaja usunięte
+oraz cały kod znajduje się w jednym pliku .cpp
+
+UWAGA NA MAKRA  -> błędy związane z typowaniem nie są tutaj wykrywane
+
+jeśli chcę tylko potraktować preprocesorem kilka plików .cpp i otrzymać wynikowy .cpp
+to robię tak:
+
+g++ -E main.cpp file.cpp   ale to zwróci mi tylko wynik na ekran
+g++ -E main.cpp file.cpp > preprocessed.cpp zwróci mi wszystko do pliku
+
+2.Diagonostyka
+tzw. front-end
+1-faza kompilatora -> sprawdzanie poprawności składniowej preprocessed.cpp
+
+3.Optymalizacja
+middle-end
+generowanie drzew AST
+flagi optymalizacyjne
+-O0: optymalizacja czasu kompilacji (domyślna wartość)
+-O1 lub -O: optymalizacja wielkości kodu oraz czasu wykonywania (poziom 1)
+-O2: optymalizacja wielkości kodu oraz czasu wykonywania (poziom 2)
+-O3: optymalizacja wielkości kodu oraz czasu wykonywania (poziom 3)
+-Os: optymalizacja wielkości kodu
+-Ofast: optymalizacja -O3 z dodatkowymi optymalizacjami obliczeniowymi
+
+4.Generowanie kodu assemblera
+by wygenerować kod assemblera z pliku .cpp wystarczy:
+g++ -S main.cpp
+
+5.Generowanie pliku obiektowego
+przetworzenie kodu assemblera na kod maszynowy -> powstają pliki .o
+g++ -o main.cpp
+
+6.Linkowanie
+Wszystkie pliki obiektowe są łączone w plik wynikowy -> sprawdzanie istnienia użytych
+symboli , jeśli nie zostanie jakiś symbol odnaleziony -> błąd linkera (undefined refference
+itd...)
+
+Rodzaje plików wynikowych:
+-plik wykonywalny
+-plik obiektowy
+-biblioteka statyczna
+-biblioteka dynamiczna
+
+
 
 Gdy Preprocesor skończy budować jednostkę translacji ,to zaczyna się etap kompilacji
 oraz budowa object files
@@ -83,16 +180,39 @@ budowanie statycznej biblioteki
 
 ####################################################################################
 
+Budowanie bibliotek dynamicznych
 
+W linuxach ld.so (dynamiczny linker/loader ) ładuje biblioteki dynamiczne wymagane przez
+program oraz odpala program
 
+Gdy odpalam program apka zwykle szuka tych bibliotek w /usr/local/lib ,jednak nie zawsze
+tam one są. Musimy powiedzieć mu gdzie te biblioteki są.
 
+Mając np. plik wykonywalny main mogę sprawdzić jakich bibliotek dynamicznych wymaga
+ldd main
 
+Biblioteki dynamiczne tworzy się z object files .o ale muszą być uprzednio skompilowane
+z flagą -fPIC (position independ code)
 
+By stworzyć bibliotekę dynamiczną należy zrobić tak:
+g++ -shared -fPIC -o mylib.so file.o
 
+Budowanie i linkowanie:
+g++ -o main main.o ./mylib.so  <-- pokombinować z wieloma ścieżkami do bibliotek
 
+####################################################################################
 
+Co robi linker?
+Po kompilacji fragmenty programu są klejone razem przez niego. Łączy dwa lub więcej
+obiektów (relocatable objects) i dostarcza informacji potrzebnych
+to umożliwiania odniesień między nimi. Relokacja (loader również ją robi) oraz
+rozwiązanie odniesień zewnętrznych jest wykonywane przez niego
 
+Co robi loader?
+Ładuje wykonywalny obiekt (executable object)  do pamięci by go wykonywać
 
+####################################################################################
+Portowanie bibliotek do Windowsa <-- Tym się zajmę jak skończę projekt
 
 
 

@@ -5,7 +5,6 @@
 #include <array>
 #include <iostream>
 
-
 //Przystosowanie OBCEJ wlasnej klasy (z polami prywatnymi) do obslugi dowiazan
 
 class ExternalClass
