@@ -8,6 +8,8 @@
 #include <iostream>
 #include <ostream>
 #include <type_traits>
+#include <sstream>
+#include <unordered_set>
 
 /*hierarchia iteratorów:
  * 1.wejściowe- jednorazowy odczyt , iteracja = odczyt i przejście -> istream
@@ -138,6 +140,171 @@ void inserters() //wstawiacze -> iteratory wyjściowe -> tylko zapis
 	dest.reserve(dest.size() * 2); // przed takimi operacjami zwiększaj rozmiar!!!!
 	std::copy(src.begin(),src.end(),std::back_inserter(dest));
 	print(dest);
+
+	//wstawiacz ogólny , inicjalizowany jest pozycją początkową oraz kontenerem
+	std::insert_iterator<std::list<int>> insrt{l,l.begin()};
+	*insrt = 40;
+	++insrt;
+	*insrt = 50;
+	++insrt;
+	print(l);
+	std::inserter(l,std::next(l.begin(),2)) = 60;
+	std::inserter(l,std::next(l.begin(),3)) = 70;
+	print(l);
+}
+
+void stream_iterator()
+{
+	//różnią się od wstawiaczy ,tym ,że zamiast operatora= wykorzystują operator<< lub operator>>
+	print("Stream iterators");
+	using itr = std::list<int>::iterator;
+	std::list<int> l{1,2,3};
+
+	std::string str{"ABCDEF"};
+	std::ostringstream s{str};
+
+	std::ostream_iterator<char> sq{s," "};
+	*sq = 'G';
+	++sq;
+	*sq = 'I';
+	++sq;
+	std::cout << s.str() << '\n';
+	print(str);
+
+	std::ostream_iterator<int> outitr{std::cout," , "};
+	for(auto x : l) outitr = x;
+	print("");
+	std::ostream_iterator<char> strout{std::cout," "};
+	for(auto x : str) strout =x;
+	print("");
+	std::copy(l.begin(),l.end(),std::ostream_iterator<int>{std::cout," "});
+	print("");
+
+	//Iteratory wejściowe
+	print("Iteratory wejściowe");
+
+	//dwa iteratory wejściowe są sobie równe jeśli
+	//1.są iteratorami końca strumienia → nie mogą prowadzić odczytu
+	//2.obydwa mogą prowadzić odczyt i wykorzystują ten sam strumień
+
+	l.clear();
+	std::istream_iterator<int> reader{std::cin};
+	std::istream_iterator<int> eof;//pusty iterator to eof
+
+	std::ostream os{std::cout.rdbuf()};
+	while (reader != eof)
+	{
+		os << *reader;
+		++reader;
+	}
+
+	print("");
+
+	std::istream_iterator<std::string> reader1{std::cin};
+	std::istream_iterator<std::string> eofstr;
+	std::ostream_iterator<std::string> strout2{std::cout," "};
+	while (reader1 != eofstr)
+	{
+		std::advance(reader1,2);
+		if(reader1 != eofstr)//wywołanie operatora* dla końca strumienia powoduje niezdefiniowane zachowanie
+			*strout2++ = *reader1++;
+	}
+}
+
+void move_iterators()
+{
+	//pamiętaj ,że jeśli stosujesz iteratory przenoszące,to możesz uzyskać dostęp do elementów tylko raz
+	//gdyż zostaną przeniesione → tylko iteratory wejściowe będą zawsze bezpieczne
+	std::list<int> l1{1,2,3,4,5};
+	//std::move_iterator<std::list<int>> start{l1.begin()};
+	//std::move_iterator<std::list<int>> end{l1.end()};
+	//std::list<int> l2{start,l1.end()};
+}
+
+//Definicja własnych funkcji dla iteratorów standardowych
+
+//1.Stworzenie funkcji bazowej przekierowującej w zależności od typu iteratora
+//2.Stworzenie konkretnych implementacji
+
+template<typename BiIterator>
+void foo(BiIterator beg,BiIterator end,std::bidirectional_iterator_tag)
+{
+	//...operacje
+}
+
+template<typename RaIterator>
+void foo(RaIterator beg,RaIterator end,std::random_access_iterator_tag)
+{
+	//...operacje
+}
+
+//funkcja-mediator
+template<typename Iterator>
+inline void foo(Iterator beg,Iterator end)
+{
+	foo (beg,end,std::iterator_traits<Iterator>::iterator_category());
+}
+
+
+//Definicja własnego iteratora
+
+//Są dwa sposoby
+//1.Podać pięć niezbędnych definicji typów dla ogólnej struktury iterator_traits
+	/* 1.kategoria iteratora
+	 * 2.typ elementu
+	 * 3.typ różnicy -opcjonalne
+	 * 4.typ wskaźnikowy -opcjonalne
+	 * 5.typ referencji -opcjonalne
+	 */
+//2.Zdefiniować częściową specjalizację struktury iterator_traits
+
+
+//sposób 1,można użyć do asocjacyjnych i nieuporządkowanych
+template<typename Container>
+class asso_insert_iterator:
+		public std::iterator < std::output_iterator_tag, typename Container::value_type>
+{
+protected:
+	Container& container_;
+public:
+	explicit asso_insert_iterator(Container& c):
+		container_{c}
+	{}
+
+	//wstawienie danych do kontenera
+	asso_insert_iterator<Container>& operator= (const typename Container::value_type& value)
+	{
+		container_.insert(value);
+		return *this;
+	}
+	//operacja dereferencji jest pusta, gdyż zwraca sam iterator
+	asso_insert_iterator<Container>& operator* ()
+	{
+		return *this;
+	}
+	//operacja inkrementacji jest pusta, gdyż zwraca sam iterator
+	asso_insert_iterator<Container>& operator++ ()
+	{
+		return *this;
+	}
+	asso_insert_iterator<Container>& operator* (int)
+	{
+		return *this;
+	}
+};
+
+//wykorzystanie
+void asso_test()
+{
+	std::unordered_set<int> set;
+
+	asso_insert_iterator<std::unordered_set<int>> itr{set};
+	*itr = 1;
+	*itr = 2;
+	*itr = 3;
+	print(set);
+
+	std::vector<int> v{1,2,3,4,5};
 }
 
 void iterator_main()
@@ -183,4 +350,6 @@ void iterator_main()
 	helper_functions();
 	inverse_iterators();
 	inserters();
+	stream_iterator();
+	asso_test();
 }

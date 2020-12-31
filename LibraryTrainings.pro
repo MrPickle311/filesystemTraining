@@ -48,6 +48,7 @@ HEADERS += \
     designPatterns/state_template.hpp \
     designPatterns/strategy_template.hpp \
     designPatterns/template_method_template.hpp \
+    designPatterns/visitor_template.hpp \
     filesystem.hpp \
     langFeatures/RTTI_dynamic_cast.hpp \
     langFeatures/class_hierarchies_1.hpp \
