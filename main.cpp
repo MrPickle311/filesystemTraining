@@ -17,12 +17,13 @@
 //#include "langFeatures/operators.hpp"
 
 //#include "stl/utility.hpp"
-#include "stl/iterators.hpp"
+//#include "stl/iterators.hpp"
+#include "stl/containers.hpp"
 
 #define sad __declspec(dllexport)
 
 int main(int argc,char* argv[])
 {
-	iterator_main();
+	container_main();
 	return 0;
 }

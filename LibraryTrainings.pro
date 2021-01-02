@@ -69,6 +69,7 @@ HEADERS += \
     queue.hpp \
     stack.hpp \
     stl/bindings_and_algorithms_and_containers.hpp \
+    stl/containers.hpp \
     stl/exeptions.hpp \
     stl/filesystem.hpp \
     stl/iterators.hpp \

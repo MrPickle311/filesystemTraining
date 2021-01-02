@@ -11,6 +11,9 @@
 #include <sstream>
 #include <unordered_set>
 
+//Tryb dokładnego debugowania STl:
+//do polecenia kompilatora dodać opcję -D_GLIBCXX_DEBUG
+
 /*hierarchia iteratorów:
  * 1.wejściowe- jednorazowy odczyt , iteracja = odczyt i przejście -> istream
  * 2.forward - możliwość odczytu wiele razy z tego samego miejsca -> forward_list , nieuporządkowane kontenery
