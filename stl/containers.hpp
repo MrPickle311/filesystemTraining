@@ -13,11 +13,17 @@
 #include <forward_list>
 #include <list>
 #include <algorithm>
+#include <queue>
+#include <functional>
 
 //Pamiętaj ,że lepiej jest używać metody .at(i) ,gdyż zgłaszają wyjątki!!!
 //funkcje front() , back() nie wykonują sprawdzenia tego ,czy konetenr jest pusty
 //vector<bool> → dynamiczne dodawanie i usuwanie bitów
 //bitset → statyczne
+//NIE USUWAJ NIC Z PUSTEGO KONTENERA
+//UWAGA → jeśli coś zapewnia gwarancję silną lub podstawową np. niezgłaszania wyjątków i jeśli wykorzystuje np. mój operator porównania
+//to on też nie może zgłaszać wyjątków
+
 
 //wektory
 //shrink_to_fit jest prośbą ,nie żądaniem
@@ -63,6 +69,36 @@
 //dodatkowo jeśli użyję operatora [] z kluczem ,dla którego węzeł nie istnieje , to zostanie utworzony nowy węzeł ,ale typ
 //wartości musi mieć konstruktor domyślny!
 //kryterium sortowania na stronie 388 na dole
+
+
+//nieuporządkowane
+//zamiast kryterium sortowania jest funkcja mieszająca
+//klucz i wartość muszą umożliwiać operacje przypisania oraz kopiowania
+//klucz musi mieć operator==
+//1-parametr → typ m 2-gi → typ hashujący , 3-ci kryterium równoważności , 4-ty alokator
+//wszystko jest umieszczone w tablicy mieszającej składającej się z kubełków , każdy kubełek to forward_list zawierająca wszystkie elementy
+//dla których funkcja mieszająca zwróciłą tę samą wartość
+//obsługują tylko operatory == i !=
+//brak lower_bound itd...
+//nie można korzystać z algorytmów wymagających iteratorów dwukierunkowych
+//nie można bezpośrednio zmieniać wartości elementów → w celu zamiany najpierw usuwamy a potem wstawiamy element
+//brak bezpośredniego dostępu do elementów
+//Mogę : określić minimalną ilość kubełków, kryterium równoważności,funkcję mieszajacą,max poziom zapełnienia po którym następuje hashowanie
+//minimalny współczynnik obciążenia → przemieszanie gdy maleje liczba elementów
+//operacje powodujące przemieszanie : clear() ,reserve() ,insert() ,rehash()
+//przemieszanie zachowuje względną kolejność
+//własne kryterium równoważności 403 , funkcja mieszająca 401
+//do usuwania elementów mogę używać tylko funkcji składowych
+//operacja erase() zachowuje wzajemne ułożenie elementów, takie same elementy są wstawiane na końcu równoważnych
+//przemieszanie unieważnia iteratory,ale referencje są ok
+//operacje takie same jak na mapach i setach
+//silna gwarancja dla jednoelementowych operacji wstawiania
+//erase(),clear(),swap() nie zgłasza wyjątku → najlepsza gwarancja
+//podstawowa gwarancja dla rehash()
+
+
+//priority queue
+//
 
 template<typename  T,typename N = typename T::value_type>
 void print_impl(const T& container, std::false_type)
@@ -253,6 +289,46 @@ void map_test()
 
 }
 
+void unordered_tests()
+{
+	print("Unordered containers");
+	std::unordered_set<int> s1(5); //liczba kubełków
+	print(s1.max_load_factor());
+	print(s1.bucket_count());
+	s1.max_load_factor(0.7);//jeśli idę w stronę 0 ,to chcę zmniejszyć zużycie pamięci ,jeśli do 1 → szybkość
+							//dobry kompromis to 0.7, domyślnie jest 1 dla superszybkości
+	s1.rehash(100); // przygotuj się na 100/max_load_factor() ( 100/0.7 ) elementów
+	print(s1.bucket_count());
+	s1.reserve(100); //przygotuj się na 100 elementów → 143 kubełki
+	print(s1.bucket_count());
+	s1.insert(3);
+	s1.insert(3);
+	s1.insert(35);
+	s1.insert(36);
+	s1.insert(5);
+	s1.insert(7);
+	print(s1.count(3));
+	print(*s1.find(7)); //zawsze korzystaj z funkcji składowych do poszukiwania są najszybsze (tylko 1 porównanie) ze wszystkich kontenerów
+	print(s1.bucket_size(7)); // liczba elementów w danym kubełku
+	print(*s1.begin(7));//zwraca iterator jednokierunkowy dla listy z danego kubełka
+}
+
+void priority_queue_test()
+{
+	//priorytetowość oznacza się po prostu jako kryterium sortowania
+	std::priority_queue<int,std::deque<int>,std::greater<int>> q;
+	q.push(1);
+	q.push(5);
+	q.push(0);
+	q.push(-12);
+	q.push(-11);
+	q.push(1213);
+	q.push(14);
+	q.push(123);
+	q.push(13);
+	print(q.top());
+}
+
 void container_main()
 {
 	array_test();
@@ -261,4 +337,6 @@ void container_main()
 	vector_test();
 	sets_test();
 	map_test();
+	unordered_tests();
+	priority_queue_test();
 }

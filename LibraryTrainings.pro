@@ -72,6 +72,7 @@ HEADERS += \
     stl/containers.hpp \
     stl/exeptions.hpp \
     stl/filesystem.hpp \
+    stl/formating.hpp \
     stl/iterators.hpp \
     stl/streams.hpp \
     stl/utility.hpp \

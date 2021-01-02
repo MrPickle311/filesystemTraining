@@ -18,12 +18,13 @@
 
 //#include "stl/utility.hpp"
 //#include "stl/iterators.hpp"
-#include "stl/containers.hpp"
+//#include "stl/containers.hpp"
+#include "stl/formating.hpp"
 
 #define sad __declspec(dllexport)
 
 int main(int argc,char* argv[])
 {
-	container_main();
+	mf_main();
 	return 0;
 }
