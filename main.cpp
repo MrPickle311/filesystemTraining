@@ -19,12 +19,13 @@
 //#include "stl/utility.hpp"
 //#include "stl/iterators.hpp"
 //#include "stl/containers.hpp"
-#include "stl/formating.hpp"
+//#include "stl/formating.hpp"
+#include <langFeatures/multiinheritance.hpp>
 
 #define sad __declspec(dllexport)
 
 int main(int argc,char* argv[])
 {
-	mf_main();
+	frer();
 	return 0;
 }

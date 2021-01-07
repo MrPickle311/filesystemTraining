@@ -95,3 +95,40 @@ void operations()
 	Radio r{"gugu"};
 	r.write();
 }
+
+//Szablonu oraz multiinheritance
+
+template<typename T>
+class Foo
+{
+public:
+	virtual void get(T)
+	{
+		//....
+	}
+	virtual void set()
+	{
+
+	}
+};
+
+class Bar:
+		public Foo<int>,
+		public Foo<double>
+{
+public:
+	virtual ~Bar() {}
+	//using Foo<int>::get;
+	//using Foo<double>::get;
+	//...
+};
+
+void frer()
+{
+	Bar b1;
+	b1.Foo<int>::set();		//jeśli wywołuję tak to nie potrzebuję deklaracji using
+	b1.Foo<double>::set();
+	b1.get(5);// tutaj potrzebuję deklarację using ,ale niespecjalnie mogę tak użyć funkcji o zerowej liczbie argumentów
+	b1.get(6);	//gdyż nie ma jak skrótowo wydedukować typu
+	b1.get(6.6);
+}
