@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 /*Interfejs Strategy deklaruje operacje wspólne dla wszystkich wersji tego samego
  * algorytmu.
