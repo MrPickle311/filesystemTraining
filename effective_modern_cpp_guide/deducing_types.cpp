@@ -116,10 +116,49 @@ void auto_type_deduction()
 
 }
 
+class Widget{};
+
+// In this template, we don’t know what type of container we’re operating on, and that
+// means we’re equally ignorant of the type of index objects it uses. Employing pass-by-
+// value for objects of an unknown type generally risks the performance hit of unneces‐
+// sary copying
+
+template<typename Container, typename Index>
+decltype(auto) authAndAccess(Container&& c, Index i)
+{
+    authenticateUser();
+    return std::forward<Container>(c)[i];//std::forward must to have
+}
+
+// For lvalue expressions of type T other than names, decltype always reports a
+// type of T&.
+
+decltype(auto) f1()
+{
+    int x = 0; // decltype(x) is int, so f1 returns int
+    return x;
+}
+
+decltype(auto) f2()
+{
+    int x = 0; // decltype((x)) is int&, so f2 returns int&
+    return (x);
+}
+
+void decltype_some_info()
+{
+    Widget w;
+    const Widget& cw = w;
+
+    auto w1 = cw;//copy
+    decltype(auto) w2 = cw;//const ref
+}
+
 int main()
 {
     template_type_deduction();
     auto_type_deduction();
-    //23
+    decltype_some_info();
+    //37 auto
 }
 
