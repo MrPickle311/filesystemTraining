@@ -145,6 +145,17 @@ decltype(auto) f2()
     return (x);
 }
 
+template<typename FuncType,
+         typename MuxType,
+         typename PtrType>
+decltype(auto) lockAndCall(FuncType func,
+                           MuxType& mutex,
+                           PtrType ptr)
+{
+    MuxGuard g(mutex);
+    return func(ptr);//return type is result type of func(ptr)
+}
+
 void decltype_some_info()
 {
     Widget w;
