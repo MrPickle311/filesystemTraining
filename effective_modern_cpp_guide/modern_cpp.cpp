@@ -240,8 +240,90 @@ void inheritance_override()
         virtual void mf3() & override;
         void mf4() const override;
     };
+}
 
+void constexpr_use_whenever_is_possible()
+{
+    //wartości obiektów constexpr są znane w trakcie kompilacji
+    // They may be placed in read-only
+    // memory, for example, and, especially for developers of embedded systems, this can
+    // be a feature of considerable importance
 
+    constexpr auto arraySize2 = 10;
+
+    int sz;
+
+    constexpr auto arraySize1 = sz; // error! not constant
+
+    // const doesn’t offer the same guarantee as constexpr, because const
+    // objects need not be initialized with values known during compilation:
+
+    // Simply put, all constexpr objects are const, but not all const objects are constexpr.
+
+    // constexpr functions produce compile-time constants when they
+    // are called with compile-time constants
+    // If they’re called with values not known until
+    // runtime, they produce runtime values.
+    //they can be called in runtine and compile time
+
+    //In C++11, constexpr functions may contain no more than a single executable state‐
+    //ment: a return.
+
+    constexpr int pow(int base, int exp) noexcept
+    {
+        return (exp == 0 ? 1 : base * pow(base, exp - 1));
+    }
+
+    // In C++11, all
+    // built-in types except void qualify, but user-defined types may be literal, too, because
+    // constructors and other member functions may be constexpr:
+
+    //in c++11 setters cannnot be constexpr bcs they modify Point's values
+    class Point 
+    {
+    public:
+        constexpr Point(double xVal = 0, double yVal = 0) noexcept
+        : x(xVal), y(yVal)
+        {}
+        constexpr double xValue() const noexcept { return x; }
+        constexpr double yValue() const noexcept { return y; }
+        void setX(double newX) noexcept { x = newX; }
+        void setY(double newY) noexcept { y = newY; }
+    private:
+        double x, y;
+    };
+
+    //but in c++14 they can be 
+
+    class Point1 
+    {
+    public:
+        constexpr Point1(double xVal = 0, double yVal = 0) noexcept
+        : x(xVal), y(yVal)
+        {}
+        constexpr double xValue() const noexcept { return x; }
+        constexpr double yValue() const noexcept { return y; }
+        constexpr void setX(double newX) noexcept { x = newX; }
+        constexpr void setY(double newY) noexcept { y = newY; }
+    private:
+        double x, y;
+    };
+
+    //That makes it possible to write functions like this:
+    constexpr Point reflection(const Point& p) noexcept
+    {
+        Point result;
+        // create non-const Point
+        result.setX(-p.xValue());
+        result.setY(-p.yValue()); // set its x and y values
+        return result; // return copy of it
+    }
+
+    constexpr Point p1(9.4, 27.7);
+    constexpr Point p2(28.8, 5.3);
+    constexpr auto mid = midpoint(p1, p2);
+
+    constexpr auto reflectedMid = reflection(mid);
 }
 
 void except()
@@ -271,7 +353,18 @@ void except()
     // • Most functions are exception-neutral rather than noexcept.
 }
 
+void thread_safety()
+{
+    // For a single variable or memory location requiring synchroni‐
+    // zation, use of a std::atomic is adequate, but once you get to two or more variables
+    // or memory locations that require manipulation as a unit, you should reach for a
+    // mutex.
+
+    // Make const member functions thread safe unless you’re certain they’ll never
+    // be used in a concurrent context.
+}
+
 int main()
 {
-    //97
+    //109
 }

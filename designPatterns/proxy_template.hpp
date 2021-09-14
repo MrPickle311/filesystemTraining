@@ -93,8 +93,7 @@ public:
 
 //Pełnomocnik posiada taki sam interfejs jak RealSubject
 
-class Proxy:
-		public Subject
+class Proxy: public Subject
 {
 private:
 	RealSubject* rs_;
