@@ -364,6 +364,96 @@ void thread_safety()
     // be used in a concurrent context.
 }
 
+void special_member_func_generation()
+{
+    // A default constructor is generated only if the class declares no constructors at all.
+
+    //od c++11 mamy 6 automatycznie generowanych funkcji:
+    // - destruktor
+    // - default ctor
+    // - move operator and move ctor
+    // - copy operator and copy ctor
+
+    // move constructor move-constructs each non-
+    // static data member of the class from the corresponding member of its parameter rhs,
+    // and the move assignment operator move-assigns each non-static data member from
+    // its parameter. The move constructor also move-constructs its base class parts and 
+    //the move assignment operator move-assigns its base class parts.
+
+    // Generated special member functions are
+    // implicitly public and inline, and they’re nonvirtual unless the function in question
+    // is a destructor in a derived class inheriting from a base class with a virtual destructor.
+    // In that case, the compiler-generated destructor for the derived class is also virtual.
+
+    // “Memberwise moves” are, in reality, more like memberwise move requests, because
+    // types that aren’t move-enabled will be “moved” via their copy operations.
+
+    // if you declare a copy constructor, but no copy assign‐
+    // ment operator, then write code that requires copy assignment, compilers will gener‐
+    // ate the copy assignment operator for you AND VICE VERSIA(decl oeprator , generate copy ctor)
+
+    // So declaring a move constructor prevents a move assignment
+    // operator from being generated, and declaring a move assignment operator prevents
+    // compilers from generating a move constructor.
+
+    // So move operations are generated for classes (when needed) only if these three things
+    // are true:
+    // • No copy operations are declared in the class.
+    // • No move operations are declared in the class.
+    // • No destructor is declared in the class.
+
+    // Declaring a move operation in a class causes compilers to disable the copy operations
+
+    // Declaring the move operations disables the copy operations, so if
+    // copyability is also desired, one more round of “= default” does the job:
+
+
+    class Base 
+    {
+    public:
+        virtual ~Base() = default;
+        
+        Base(Base&&) = default; // support moving
+        Base& operator=(Base&&) = default;
+
+        Base(const Base&) = default;
+        Base& operator=(const Base&) = default;
+    };
+
+    class StringTable 
+    {
+    public:
+        StringTable()
+        { makeLogEntry("Creating StringTable object"); }
+        ~StringTable()
+        { makeLogEntry("Destroying StringTable object"); }
+    private:
+        std::map<int, std::string> values;
+    };
+
+    //w powyższej klasie move ctor oraz move operator będzie kopiować
+    //ale jeśli damy StringTable(StringTable&&) = default; to problem zniknie
+
+    class Widget {
+
+        template<typename T>
+        Widget(const T& rhs);
+        // construct Widget
+        // from anything
+
+        template<typename T>
+        Widget& operator=(const T& rhs);
+        // assign Widget
+        // from anything
+    };
+
+    //ale jeśli mamy szablony ctorów i operatorów kopiujących , to przenoszenie jest możliwe
+
+    // Member function templates never suppress generation of special member functions.
+
+    
+}
+
 int main()
 {
     //109
