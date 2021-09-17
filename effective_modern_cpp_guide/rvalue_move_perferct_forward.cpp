@@ -148,11 +148,52 @@ void forward_to_universal_move_to_rvalue()
     {
         return std::move(w);
     }
+}
+
+#include <set>
+
+void avoid_overloading_and_universal_ref()
+{
+    std::multiset<std::string> names;
+    
+    //po prostu napisanie takiej funkcji
+    template<typename T>
+    void logAndAdd(T&& name)
+    {
+        auto now = std::chrono::system_clock::now();
+        log(now, "logAndAdd");
+        names.emplace(std::forward<T>(name));
+    }
+
+    std::string nameFromIdx(int idx);
+
+    //i przeciążenie jej w taki sposób
+
+    void logAndAdd(int idx)
+    {
+        auto now = std::chrono::system_clock::now();
+        log(now, "logAndAdd");
+        names.emplace(nameFromIdx(idx));
+    }
+
+    //po czym wowołanie jej z typem , który jest rzutowalny na int
+
+    short nameid{4};
+
+    //to sie nie skompiluje
+    logAndAdd(nameid);
+
+    //tak samo jest z konstruktorami przyjmującymi uniwersalne refy
+    //a to dlatego ,że i tak po cichu będą tworzone move oraz copy ctory
+
+    // Perfect-forwarding constructors are especially problematic, because they’re
+    // typically better matches than copy constructors for non-const lvalues, and
+    // they can hijack derived class calls to base class copy and move constructors.
 
 
 }
 
 int main()
 {
-    //177
+    //184
 }
