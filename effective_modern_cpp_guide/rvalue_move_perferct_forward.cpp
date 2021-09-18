@@ -1,6 +1,7 @@
 #include <string>
 #include <type_traits>
 #include <memory>
+#include <vector>
 
 void move_forward()
 {
@@ -191,6 +192,149 @@ void avoid_overloading_and_universal_ref()
     // they can hijack derived class calls to base class copy and move constructors.
 
 
+}
+
+class Widget{};
+Widget widgetFactory(){ return {}; }
+
+template<typename T>
+void func(T&& param){}
+
+void undersand_reference_collapsing()
+{
+    // lvalues are encoded as lvalue references, but rvalues are encoded as non-references
+
+    Widget w;
+
+    func(w); // call func with lvalue  T deduced
+            // to be Widget&
+
+    func(widgetFactory()); // call func with rvalue; T deduced
+                            // to be Widget
+
+
+    // If either reference is an lvalue reference, the result is an lvalue reference.
+    // Otherwise (i.e., if both are rvalue references) the result is an rvalue refer‐
+    // ence.
+
+    auto&& w1 = w; //lvalue ref
+
+    auto&& w2 = widgetFactory();
+
+    //czyli jeśli są trzy znaczki &&& to są zbijane do jednego &
+    //na tym polega reference collapsing
+
+    //więcej znaczków & niż 3 nie da sie postawić
+
+    // Reference collapsing occurs in four contexts: template instantiation, auto type
+    // generation, creation and use of typedefs and alias declarations, and
+    // decltype.
+
+    // Universal references are rvalue references in contexts where type deduction
+    // distinguishes lvalues from rvalues and where reference collapsing occurs.
+
+
+}
+
+void assume_that_move_operations_are_not_present()
+{
+    // small string optimization (SSO). With the
+    // SSO, “small” strings (e.g., those with a capacity of no more than 15 characters)
+
+    //przeniesienie wektora polega tylko na przenesieniu wskaźnika
+    //do ciała danych
+    //czas przeniesienia - stały
+
+    std::vector<Widget> vw1;
+    //put data
+    auto vw2 = std::move(vw1);
+
+
+    //moving and copying a std::array have linear-time computational complexity
+    //because each element in the container must be copied or moved.
+    std::array<Widget, 10000> aw1;
+
+    auto aw2 = std::move(aw1);
+}
+
+void f(const std::vector<int>& v){}
+
+template<typename... Ts>
+void fwd(Ts&&... params)
+{
+    f(std::forward<Ts>(params)...);
+}
+
+//jakiś dekorator na funkcję
+template<typename T>
+T workOnVal(T param)
+{
+    //code
+}
+
+void perfect_forwarding_failure_cases()
+{
+    // Perfect forwarding fails when either of the following occurs:
+    //Compilers are unable to deduce a type
+    //Compilers deduce the “wrong” type
+
+    fwd({3,2,5});//to się nie skompiluje
+    //nie wiadomo na co skonwertować
+    //kompilator ma zabronione takie coś
+    //ale jakby się dało std::initializer_list to by działało
+
+    f({2,3,2});
+
+    auto il = { 1, 2, 3 };
+
+    fwd(il);//to już zadziała bo znany jest typ
+
+    //te dwie poniższe deklaracje
+    //kompilator rozumie tak samo
+    void f(int (*pf)(int));
+    void f(int pf(int));
+
+    //jeśli chcemy przekazać jakąś przeciążoną funkcję
+    //do fwd to można zrobić jak poniżej
+
+    //przeciążone funkcje
+    int processVal(int value);
+    int processVal(int value, int priority);
+
+    using ProcessFuncType = int (*)(int);
+
+    ProcessFuncType processValPtr = processVal;
+
+    fwd(processValPtr);//działa
+
+    //teraz szablon również zadziała
+    fwd(static_cast<ProcessFuncType>(workOnVal)); // also fine
+
+    //pola bitowe
+
+    struct IPv4Header {
+        std::uint32_t version:4,
+                      L:4,
+                      CP:6,
+                      N:2,
+                      talLength:16;
+    };
+
+    IPv4Header h;
+
+    fwd(h.talLength);//to się nie skompiluje
+    //tutaj jest wymagane podanie referencji
+    //ale nie można pobrać adresu pola bitowego
+
+    //istnieje reguła
+    // “A non-const reference shall not be bound to a bit-field.”
+
+    // by to zadziałało trzeba przecastować wartość pola bitowego i ją skopiować
+
+    // copy bitfield value; see Item 6 for info on init. form
+    auto length = static_cast<std::uint16_t>(h.talLength);
+
+    fwd(length); // forward the copy
 }
 
 int main()
